@@ -1,39 +1,88 @@
-import { TextInput } from "react-native-gesture-handler";
-
-export const color = {
-  // Brand Colors
-  primary: "#118C2E",
-  primaryLight: "#178F91",
-  secondary: "#25878F",
-  red:"#fa7f7c",
-  fullred:"#911719",
-  fullredLight: "#FF6B6B",
-  redverulight: "#FDEAEA",
-  error: "#ff1a1a",
-  pending: "#FFD580",
+export const colors = {
+  primary: "#1B5E20",
+  primaryLight: "#2E7D32",
+  secondary: "#D97706",
+  secondaryLight: "#d69952",
+  accent: "#25878F",
   yellow: "#F8B400",
+  yellowDark: "#8A6400",
+  yellowBright: "#F9C400",
+  yellowDeep: "#7C5A00",
+  yellowText: "#4D3700",
+  yellowTextMuted: "#5C4600",
+  yellowBorder: "#D8A500",
+  yellowBadge: "#7B5A00",
 
-  // Backgrounds
-  background: "#F3F3F3",
-  backgroundLight: "#F1F0F5",
-  backgroundDark: "#EEEEEE",
+  background: "#F8FAF8",
+  surface: "#F7F8F2",
+  surfaceMuted: "#F6F7F9",
+  surfaceSoft: "#F8F8F8",
+  surfaceLight: "#F2F2F2",
+  card: "#FFFFFF",
+  overlay: "rgba(0,0,0,0.4)",
+  overlayStrong: "rgba(0, 0, 0, 0.5)",
+  whiteTranslucent: "#ffffffbf",
+  whiteOverlay: "rgba(255,255,255,0.82)",
+  whiteWash: "rgba(255,255,255,0.15)",
+  whiteLine: "rgba(255,255,255,0.2)",
+  whiteBorder: "rgba(255,255,255,0.3)",
+  whiteCard: "rgba(255,255,255,0.12)",
+  primaryOverlay: "rgba(17,140,46,0.04)",
+  primaryTint: "#E8F5E9",
+  primaryTintLight: "#E8F7EC",
+  primaryTintSoft: "#E8F8EA",
+  primaryBorder: "#B7D8BD",
+  weatherLight: "#E7FFE9",
+  weatherSoft: "#DFFFE4",
 
-  // Alerts status colors
-  alertError: "#E34242",
-  alertSuccess: "#28A745",
-  alertInfo: "#17A2B8",
-
+  textPrimary: "#000000",
+  textHeading: "#111111",
+  textDark: "#111827",
+  textBody: "#333333",
+  textMuted: "#777777",
+  textSubtle: "#999999",
+  textSoft: "#7B7B7B",
+  textFaint: "#666666",
+  textCharcoal: "#4A4A4A",
+  textSecondary: "#6B7280",
   textWhite: "#FFFFFF",
 
-  neutral: {
-    100: "#E8E8E8",
-    200: "#D9D9D9",
-    300: "#BFBFBF",
-    500: "#969696",
-  },
+  success: "#16A34A",
+  error: "#DC2626",
+  red: "#DC2626",
+  fullred: "#DC2626",
+  fullredLight: "#FEE2E2",
+  warning: "#F59E0B",
 
-  // Utility
-  muted: "#888888",
+  border: "#E5E7EB",
+  borderSoft: "#DADADA",
+  borderMuted: "#E1E1E1",
+  borderLight: "#E8E8E8",
+  borderSubtle: "#EEEEEE",
+  borderInput: "#DDDDDD",
+  borderControl: "#C8C8C8",
+  borderCard: "#E2E2E2",
+
   white: "#FFFFFF",
   black: "#000000",
+  transparent: "transparent",
+  redverulight: "#FEE2E2",
+
+  neutral: {
+    50: "#F9FAFB",
+    100: "#F3F4F6",
+    200: "#E5E7EB",
+    300: "#D1D5DB",
+    400: "#9CA3AF",
+    500: "#6B7280",
+    600: "#4B5563",
+    700: "#374151",
+    800: "#1F2937",
+    900: "#111827",
+  },
 };
+
+export const color = colors;
+
+export default colors;
+

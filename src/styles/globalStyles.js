@@ -2,6 +2,7 @@
 import { StyleSheet } from "react-native";
 import { fonts } from "./fonts";
 import { color } from "./theme";
+import buttonStyles from "./buttons";
 // import { color } from "./theme";
 // import { fonts } from "./fonts";
 
@@ -90,7 +91,7 @@ export default StyleSheet.create({
 
   //  divider: {
   //     height: 1,
-  //     backgroundColor: "#ffffff80",
+  //     backgroundColor: color.whiteLine,
   //     marginVertical: 12,
   //   },
 
@@ -106,7 +107,7 @@ export default StyleSheet.create({
   },
 
   bgcontainer: {
-    backgroundColor: "#f3f3f3ff",
+    backgroundColor: color.neutral[100],
   },
   bgredverulight: {
     backgroundColor: color.redverulight,
@@ -305,15 +306,15 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: color.secondary,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     paddingVertical: 16,
     paddingHorizontal: 14,
     justifyContent: "center",
   },
   textArea: {
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderRadius: 10,
-    borderColor: "#ccc",
+    borderColor: color.neutral[300],
     borderWidth: 1,
     padding: 12,
     textAlignVertical: "top",
@@ -323,7 +324,8 @@ export default StyleSheet.create({
 
   // Login button ----------- start
   yellowbutton: {
-    backgroundColor: "#F8B400",
+    ...buttonStyles.base,
+    ...buttonStyles.secondary,
     paddingVertical: 18,
     borderRadius: 12,
     marginTop: 20,
@@ -331,7 +333,8 @@ export default StyleSheet.create({
     marginBottom: 12,
   },
   blackButton: {
-    backgroundColor: color.black,
+    ...buttonStyles.base,
+    ...buttonStyles.dark,
     paddingVertical: 18,
     borderRadius: 12,
     marginTop: 20,
@@ -339,13 +342,15 @@ export default StyleSheet.create({
     marginBottom: 12,
   },
    blackButtonotp: {
-    backgroundColor: color.black,
+    ...buttonStyles.base,
+    ...buttonStyles.dark,
     paddingVertical: 18,
     borderRadius: 12,
     alignItems: "center",
   },
    smallyellowButtonotp: {
-    backgroundColor: color.yellow,
+    ...buttonStyles.base,
+    ...buttonStyles.secondary,
     paddingVertical: 18,
     borderRadius: 12,
     alignItems: "center",
@@ -638,3 +643,4 @@ export default StyleSheet.create({
   },
   // Font styles .............. end
 });
+
