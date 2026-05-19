@@ -1,0 +1,21 @@
+import { createStackNavigator } from "@react-navigation/stack";
+
+import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
+import SplashScreen from "../screens/SplashScreen";
+import ChooseLanguage from "../components/ChooseLanguage";
+import KycSetupScreen from "../screens/KycSetupScreen";
+
+const Stack = createStackNavigator();
+
+export default function AuthNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="KycSetup" component={KycSetupScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="ChooseLanguage" component={ChooseLanguage} />
+    </Stack.Navigator>
+  );
+}

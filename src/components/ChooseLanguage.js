@@ -5,21 +5,22 @@ import {
   StatusBar,
   ImageBackground,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import tw from "twrnc";
 import { Ionicons } from "@expo/vector-icons";
 
 import globalStyles from "../styles/globalStyles";
 import { color } from "../styles/theme";
 import CustomText from "../components/CustomText";
 import { useNavigation } from "@react-navigation/native";
+import SplashScreenBg from "../../assets/images/splashBg.png";
 const languages = [
   {
     id: 1,
     title: "English",
     subtitle: "English",
-    short: "A文",
+    short: "Aa",
   },
   {
     id: 2,
@@ -50,116 +51,42 @@ const languages = [
 export default function ChooseLanguage() {
   const [selectedLanguage, setSelectedLanguage] = useState(1);
   const navigation = useNavigation();
+
   return (
-    <SafeAreaView
-      style={[
-        tw`flex-1`,
-        {
-          backgroundColor: "#F7F8F2",
-        },
-      ]}
-    >
-      <StatusBar backgroundColor="#F7F8F2" barStyle="dark-content" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar backgroundColor="transparent" barStyle="dark-content" />
 
       <ImageBackground
-        source={require("../../assets/Images/Banner/splashBg.png")}
+        source={SplashScreenBg}
         resizeMode="cover"
-        style={tw`flex-1`}
+        style={styles.bg}
       >
-        <View
-          style={[
-            tw`absolute inset-0`,
-            {
-              backgroundColor: "rgba(255,255,255,0.82)",
-            },
-          ]}
-        />
+        <View style={styles.overlay} />
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 22,
-            paddingTop: 20,
-            paddingBottom: 40,
-            flexGrow: 1,
-          }}
+          contentContainerStyle={styles.scrollContent}
         >
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => navigation.navigate("Login")}
-            style={[
-              globalStyles.flexrow,
-              globalStyles.alineItemscenter,
-              globalStyles.alineSelfend,
-              {
-                marginTop: 10,
-              },
-            ]}
+            style={styles.skipButton}
           >
-            {/* <Ionicons
-              name="globe-outline"
-              size={24}
-              color="#118C2E"
-            /> */}
-
-            <CustomText
-              style={[
-                globalStyles.f16Bold,
-                {
-                  color: "#118C2E",
-                  marginLeft: 8,
-                },
-              ]}
-            >
+            <CustomText style={styles.skipText}>
               Skip
             </CustomText>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <View
-            style={[
-              globalStyles.alineItemscenter,
-              {
-                marginTop: 30,
-                marginBottom: 30,
-              },
-            ]}
-          >
-            <View
-              style={{
-                width: 76,
-                height: 76,
-                borderRadius: 50,
-                borderWidth: 1.5,
-                borderColor: "#B7D8BD",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: 24,
-                backgroundColor: "rgba(17,140,46,0.03)",
-              }}
-            >
-              <Ionicons name="globe-outline" size={38} color="#118C2E" />
+          <View style={styles.header}>
+            <View style={styles.globeIconWrap}>
+              <Ionicons name="globe-outline" size={38} color={color.GREEN} />
             </View>
 
-            <CustomText
-              style={[
-                globalStyles.f32Bold,
-                globalStyles.black,
-                globalStyles.textac,
-              ]}
-            >
+            <CustomText style={styles.title}>
               Choose Language
             </CustomText>
 
-            <CustomText
-              style={[
-                globalStyles.f18Regular,
-                globalStyles.neutral500,
-                globalStyles.textac,
-                {
-                  marginTop: 10,
-                },
-              ]}
-            >
+            <CustomText style={styles.subtitle}>
               Select your preferred language
             </CustomText>
           </View>
@@ -187,34 +114,17 @@ export default function ChooseLanguage() {
                 </View>
 
                 <View style={{ flex: 1 }}>
-                  <CustomText
-                    style={[globalStyles.f16Bold, globalStyles.black]}
-                  >
+                  <CustomText style={styles.languageTitle}>
                     {item.title}
                   </CustomText>
 
-                  <CustomText
-                    style={[
-                      globalStyles.f16Regular,
-                      globalStyles.neutral500,
-                      {
-                        marginTop: 4,
-                      },
-                    ]}
-                  >
+                  <CustomText style={styles.languageSubtitle}>
                     {item.subtitle}
                   </CustomText>
                 </View>
 
                 <View style={styles.languageBadge}>
-                  <CustomText
-                    style={[
-                      globalStyles.f20Bold,
-                      {
-                        color: "#118C2E",
-                      },
-                    ]}
-                  >
+                  <CustomText style={styles.languageBadgeText}>
                     {item.short}
                   </CustomText>
                 </View>
@@ -224,68 +134,30 @@ export default function ChooseLanguage() {
 
           <View style={{ flex: 1 }} />
 
-          <View
-            style={{
-              paddingHorizontal: 2,
-              marginTop: 10,
-              paddingBottom: 10,
-            }}
-          >
+          <View style={styles.footer}>
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => navigation.navigate("Login")}
               style={styles.continueButton}
             >
-              <CustomText
-                style={[
-                  globalStyles.f24Bold,
-                  globalStyles.textWhite,
-                  {
-                    letterSpacing: 0.3,
-                  },
-                ]}
-              >
+              <CustomText style={styles.continueText}>
                 Continue
               </CustomText>
 
               <View style={styles.continueArrowWrap}>
-                <Ionicons name="arrow-forward" size={34} color="#FFFFFF" />
+                <Ionicons name="arrow-forward" size={34} color={color.WHITE} />
               </View>
             </TouchableOpacity>
 
-            <View
-              style={[
-                globalStyles.flexrow,
-                globalStyles.justifycenter,
-                globalStyles.alineItemscenter,
-                {
-                  marginTop: 22,
-                },
-              ]}
-            >
+            <View style={styles.secureRow}>
               <Ionicons
                 name="shield-checkmark-outline"
                 size={26}
-                color="#118C2E"
+                color={color.GREEN}
               />
 
-              <CustomText
-                style={[
-                  globalStyles.f16Regular,
-                  {
-                    marginLeft: 8,
-                    color: "#4A4A4A",
-                  },
-                ]}
-              >
-                <CustomText
-                  style={[
-                    globalStyles.f16Bold,
-                    {
-                      color: "#118C2E",
-                    },
-                  ]}
-                >
+              <CustomText style={styles.secureText}>
+                <CustomText style={styles.secureStrong}>
                   100%
                 </CustomText>{" "}
                 Secure
@@ -298,7 +170,62 @@ export default function ChooseLanguage() {
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    // backgroundColor: color.SURFACE,
+  },
+  bg: {
+    flex: 2,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.82)",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 22,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+  skipButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-end",
+    marginTop: 10,
+  },
+  skipText: {
+    ...globalStyles.f16Bold,
+    color: color.GREEN,
+    marginLeft: 8,
+  },
+  header: {
+    alignItems: "center",
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  globeIconWrap: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    borderWidth: 1.5,
+    borderColor: color.BORDER_GREEN,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
+    backgroundColor: "rgba(46,125,50,0.04)",
+  },
+  title: {
+    ...globalStyles.f24Bold,
+    color: color.TEXT_MAIN,
+    textAlign: "center",
+  },
+  subtitle: {
+    ...globalStyles.f18Regular,
+    color: color.TEXT_MUTED,
+    textAlign: "center",
+    marginTop: 10,
+  },
   languageCard: {
     height: 60,
     borderRadius: 24,
@@ -316,8 +243,8 @@ const styles = {
   },
 
   languageCardSelected: {
-    borderColor: "#118C2E",
-    backgroundColor: "rgba(17,140,46,0.04)",
+    borderColor: color.GREEN,
+    backgroundColor: "rgba(46,125,50,0.04)",
   },
 
   radioOuter: {
@@ -335,14 +262,23 @@ const styles = {
   },
 
   radioOuterSelected: {
-    borderColor: "#118C2E",
+    borderColor: color.GREEN,
   },
 
   radioInner: {
     width: 18,
     height: 18,
     borderRadius: 50,
-    backgroundColor: "#118C2E",
+    backgroundColor: color.GREEN,
+  },
+  languageTitle: {
+    ...globalStyles.f16Bold,
+    color: color.TEXT_MAIN,
+  },
+  languageSubtitle: {
+    ...globalStyles.f16Regular,
+    color: color.TEXT_MUTED,
+    marginTop: 4,
   },
 
   languageBadge: {
@@ -351,10 +287,19 @@ const styles = {
 
     paddingHorizontal: 10,
   },
+  languageBadgeText: {
+    ...globalStyles.f20Bold,
+    color: color.GREEN,
+  },
+  footer: {
+    paddingHorizontal: 2,
+    marginTop: 10,
+    paddingBottom: 10,
+  },
 
   continueButton: {
     height: 60,
-    backgroundColor: "#118C2E",
+    backgroundColor: color.GREEN,
 
     borderRadius: 26,
 
@@ -372,6 +317,11 @@ const styles = {
 
     position: "relative",
   },
+  continueText: {
+    ...globalStyles.f20Bold,
+    color: color.WHITE,
+    letterSpacing: 0.3,
+  },
 
   continueArrowWrap: {
     position: "absolute",
@@ -380,4 +330,19 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
   },
-};
+  secureRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  secureText: {
+    ...globalStyles.f16Regular,
+    marginLeft: 8,
+    color: color.TEXT_SUB,
+  },
+  secureStrong: {
+    ...globalStyles.f16Bold,
+    color: color.GREEN,
+  },
+});

@@ -35,7 +35,7 @@ const KycSetupScreen = ({ navigation }) => {
       <LinearGradient colors={["#0F3D22", "#166534"]} style={styles.hero}>
         <View style={styles.logoRow}>
           <Image
-            source={require("../../assets/Images/logo/iconpngplain.png")}
+            source={require("../../assets/images/logo/iconpngplain.png")}
             style={styles.logoIcon}
             resizeMode="contain"
           />
@@ -127,7 +127,17 @@ const KycSetupScreen = ({ navigation }) => {
         <TouchableOpacity
           activeOpacity={0.88}
           style={styles.button}
-          onPress={() => navigation.replace("Home")}
+          onPress={() =>
+            navigation.getParent()?.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'Main',
+                  params: { screen: 'HomeTab' },
+                },
+              ],
+            })
+          }
         >
           <Text style={styles.buttonText}>Continue to Dashboard</Text>
         </TouchableOpacity>

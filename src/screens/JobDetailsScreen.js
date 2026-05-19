@@ -21,7 +21,7 @@ const fallbackJob = {
   time: "Today, 7:30 AM",
   workers: "6 workers needed",
   rating: "4.8",
-  image: require("../../assets/Images/Banner/Slider-2.png"),
+  image: require("../../assets/images/Banner/Slider-2.png"),
 };
 
 const steps = [

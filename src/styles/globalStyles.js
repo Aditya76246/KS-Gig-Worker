@@ -1,21 +1,13 @@
 // src/styles/globalStyles.js
 import { StyleSheet } from "react-native";
+// import { color } from "./theme";
 import { fonts } from "./fonts";
 import { color } from "./theme";
-import buttonStyles from "./buttons";
-// import { color } from "./theme";
-// import { fonts } from "./fonts";
 
 export default StyleSheet.create({
   // Bootstrap styles ----------- start
   flexrow: {
     flexDirection: "row",
-  },
-  flex: {
-    display: "flex",
-  },
-  flex1: {
-    flex: 1,
   },
   justifysb: {
     justifyContent: "space-between",
@@ -44,9 +36,6 @@ export default StyleSheet.create({
   alineItemscenter: {
     alignItems: "center",
   },
-  alineItemsstart: {
-    alignItems: "flex-start",
-  },
   alineItemsEnd: {
     alignItems: "flex-end",
   },
@@ -56,14 +45,8 @@ export default StyleSheet.create({
   alineSelfend: {
     alignSelf: "flex-end",
   },
-  alineSelfstart: {
-    alignSelf: "flex-start",
-  },
   textac: {
     textAlign: "center",
-  },
-  w30: {
-    width: "30%",
   },
   w40: {
     width: "40%",
@@ -74,117 +57,59 @@ export default StyleSheet.create({
   w60: {
     width: "60%",
   },
-  w100: {
-    width: "100%",
-  },
-  divider: {
-    height: 1.5,
-    backgroundColor: color.neutral[200],
-    marginVertical: 10,
-  },
-  dividerWhite: {
-    height: 1.5,
-    backgroundColor: color.white,
-    marginVertical: 10,
-  },
-  
-
-  //  divider: {
-  //     height: 1,
-  //     backgroundColor: color.whiteLine,
-  //     marginVertical: 12,
-  //   },
 
   // Bootstrap styles .............. end
 
   // Default styles ----------- start
 
   container: {
+    // backgroundColor: color.white,
     flex: 1,
-    paddingHorizontal: 20,
-    alignItems: 'center',
+    paddingHorizontal: 12,
     justifyContent: "center",
-  },
-
-  bgcontainer: {
-    backgroundColor: color.neutral[100],
-  },
-  bgredverulight: {
-    backgroundColor: color.redverulight,
   },
   radius: {
     borderRadius: 8,
   },
-  borderRadiuslarge: {
-    borderRadius: 20,
-  },
   // Default styles .............. end
 
-  // Color styles ----------- start
-  primary: {
-    color: color.primary,
-  },
-  secondary: {
-    color: color.secondary,
-  },
-  textWhite: {
-    color: color.white,
-  },
-  textyellow: {
-    color: color.yellow,
-  },
-  black: {
-    color: color.black,
-  },
-  red: {
-    color: color.red,
-  },
-  error: {
-    color: color.error,
-  },
 
-  fullred: {
-    color: color.fullred,
+
+  // Color styles ----------- start
+  green:{
+    color: color.GREEN,
   },
-  fullredLight: {
-    color: color.fullredLight,
+  greenDark:{
+    color: color.GREEN_DARK,
   },
-  neutral100: {
-    color: color.neutral[100],
+  yellow:{
+    color: color.YELLOW,
   },
-  neutral200: {
-    color: color.neutral[200],
+  surface:{
+    color: color.SURFACE,
   },
-  neutral300: {
-    color: color.neutral[300],
+  surfaceLow:{
+    color: color.SURFACE_LOW,
   },
-  neutral500: {
-    color: color.neutral[500],
+  surfaceContainer:{
+    color: color.SURFACE_CONTAINER,
   },
-  bgneutral100: {
-    backgroundColor: color.neutral[100],
+  border:{
+    color: color.BORDER,
   },
-  bgneutral200: {
-    backgroundColor: color.neutral[200],
-  },
-  bgneutral300: {
-    backgroundColor: color.neutral[300],
-  },
-  bgneutral500: {
-    backgroundColor: color.neutral[500],
-  },
+  redReject:{
+    color: color.RED_REJECT,
+  },  
+
   // Color styles .............. end
 
   // background color ----------- start
-  bgprimary: {
-    backgroundColor: color.primary,
-  },
-  bgwhite: {
-    backgroundColor: color.white,
-  },
-  bgBlack: {
-    backgroundColor: color.black,
-  },
+//   bgprimary: {
+//     backgroundColor: color.primary,
+//   },
+//   bgwhite: {
+//     backgroundColor: color.white,
+//   },
   // background color .............. end
 
   // margins and paddings ----------- start
@@ -223,7 +148,6 @@ export default StyleSheet.create({
   ml3: { marginLeft: 12 },
   ml4: { marginLeft: 16 },
   ml5: { marginLeft: 20 },
-  ml50: { marginLeft: 50 },
   // Right margins
   mr0: { marginRight: 0 },
   mr1: { marginRight: 4 },
@@ -254,7 +178,6 @@ export default StyleSheet.create({
   p3: { padding: 12 },
   p4: { padding: 16 },
   p5: { padding: 20 },
-  p30: { padding: 30 },
   p40: { padding: 40 },
   // Top paddings
   pt0: { paddingTop: 0 },
@@ -284,7 +207,6 @@ export default StyleSheet.create({
   pr3: { paddingRight: 12 },
   pr4: { paddingRight: 16 },
   pr5: { paddingRight: 20 },
-  pr30: { paddingRight: 30 },
   // Horizontal paddings
   ph0: { paddingHorizontal: 0 },
   ph1: { paddingHorizontal: 4 },
@@ -302,98 +224,29 @@ export default StyleSheet.create({
   // margins and paddings .............. end
 
   // inputBox  ----------- start
-  inputBox: {
-    borderWidth: 1,
-    borderColor: color.secondary,
-    borderRadius: 10,
-    backgroundColor: color.white,
-    paddingVertical: 16,
-    paddingHorizontal: 14,
-    justifyContent: "center",
-  },
-  textArea: {
-    backgroundColor: color.white,
-    borderRadius: 10,
-    borderColor: color.neutral[300],
-    borderWidth: 1,
-    padding: 12,
-    textAlignVertical: "top",
-    minHeight: 100,
-  },
+
   //  inputBox .............. end
 
   // Login button ----------- start
-  yellowbutton: {
-    ...buttonStyles.base,
-    ...buttonStyles.secondary,
-    paddingVertical: 18,
-    borderRadius: 12,
-    marginTop: 20,
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  blackButton: {
-    ...buttonStyles.base,
-    ...buttonStyles.dark,
-    paddingVertical: 18,
-    borderRadius: 12,
-    marginTop: 20,
-    alignItems: "center",
-    marginBottom: 12,
-  },
-   blackButtonotp: {
-    ...buttonStyles.base,
-    ...buttonStyles.dark,
-    paddingVertical: 18,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-   smallyellowButtonotp: {
-    ...buttonStyles.base,
-    ...buttonStyles.secondary,
-    paddingVertical: 18,
-    borderRadius: 12,
-    alignItems: "center",
-  },
+
   // Login button .............. end
 
   // Card ----------start
-  cardwidth: {
-    borderRadius: 20,
-    width: "90%",
-    alignSelf: "flex-end",
-  },
-  card: {
-    borderRadius: 20,
-    shadowColor: color.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  avatarside: {
-    width: 80,
-    height: 110,
-    position: "absolute",
-    top: 0,
-    left: -50,
-    zIndex: 1,
-    borderRadius: 14,
-    borderWidth: 4,
-    shadowColor: color.black,
-    shadowOffset: { width: 4, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 20,
-    borderColor: color.white,
-  },
+
   // Card ............ end
 
   // Modal ---------- Start
 
   // Modal ............ end
 
+
   // Font styles ----------- start
+  f8Bold:{
+    ...fonts.lilBold,
+  },
+  f9Bold:{
+    ...fonts.xllBold,
+  },
   f10Bold: {
     ...fonts.tinyBold,
   },
@@ -402,6 +255,9 @@ export default StyleSheet.create({
   },
   f14Bold: {
     ...fonts.regularBold,
+  },
+  f14Regular: {
+    ...fonts.regularRegular,
   },
   f16Bold: {
     ...fonts.mediumBold,
@@ -574,6 +430,9 @@ export default StyleSheet.create({
 
   // Regular Fonts------------start
 
+  f8Regular: {
+    ...fonts.tinyLittleRegular,
+  },
   f10Regular: {
     ...fonts.tinyRegular,
   },
@@ -607,6 +466,7 @@ export default StyleSheet.create({
   f44Regular: {
     ...fonts.heroRegular,
   },
+
 
   f10ExtraLight: {
     ...fonts.tinyExtraLight,
@@ -643,4 +503,3 @@ export default StyleSheet.create({
   },
   // Font styles .............. end
 });
-
