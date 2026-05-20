@@ -218,6 +218,39 @@ export default function HomeScreen({ navigation }) {
     extrapolate: "clamp",
   });
 
+  function RunningJobCard({ job, navigation, tx }) {
+  const { width } = useWindowDimensions();
+  const cardWidth = width * 0.78; // 78% of screen width
+
+  return (
+    <TouchableOpacity
+      activeOpacity={0.9}
+      style={[styles.runningCard, { width: cardWidth }]}
+      onPress={() => navigation.navigate("JobDetails", { job })}
+    >
+      <View style={styles.runningImageWrapper}>
+        <Image source={job.image} style={styles.runningImage} resizeMode="cover" />
+        <View style={styles.runningStatusTag}>
+          <Text style={styles.runningStatusText}>{tx("ONGOING")}</Text>
+        </View>
+      </View>
+      
+      <View style={styles.runningBody}>
+        <Text style={styles.runningType} numberOfLines={1}>{tx(job.type)}</Text>
+        <Text style={styles.runningMeta} numberOfLines={1}>{tx(job.crop)} • {tx(job.village)}</Text>
+        
+        <View style={styles.runningFooter}>
+          <Text style={styles.runningPay}>{job.pay}</Text>
+          <View style={styles.trackBtn}>
+            <Ionicons name="navigate-circle" size={18} color="#15803D" />
+            <Text style={styles.trackText}>{tx("Track")}</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
   return (
     <View style={styles.screen}>
       <StatusBar barStyle="light-content" backgroundColor="#0B3B21" />
@@ -439,7 +472,31 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
 
+          {/* Running Bookings Section */}
+          <View style={styles.sectionHeader}>
+            <View>
+              <Text style={styles.sectionTitle}>{tx("Running Bookings")}</Text>
+              <Text style={styles.sectionSubtitle}>{tx("Manage your active bookings")}</Text>
+            </View>
+            <View style={styles.runningLivePill}>
+              <View style={styles.liveDot} />
+              <Text style={styles.liveText}>{tx("Active")}</Text>
+            </View>
+          </View>
 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={width * 0.78 + 12} // Card width + gap
+            decelerationRate="fast"
+            contentContainerStyle={styles.runningScrollerContent}
+          >
+            {jobs.map((job) => (
+              <RunningJobCard key={job.id} job={job} navigation={navigation} tx={tx} />
+            ))}
+          </ScrollView>
+
+            
           <View style={styles.sectionHeader}>
             <View>
               <Text style={styles.sectionTitle}>{tx("Nearby job alerts")}</Text>
@@ -454,22 +511,7 @@ export default function HomeScreen({ navigation }) {
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} navigation={navigation} tx={tx} />
           ))}
-
-          {/* Running Bookings */}
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>{tx("Running Bookings")}</Text>
-              <Text style={styles.sectionSubtitle}>{tx("Manage your active bookings")}</Text>
-            </View>
-            <View style={styles.livePill}>
-              <View style={styles.liveDot} />
-              <Text style={styles.liveText}>{tx("Live")}</Text>
-            </View>
-          </View>
-
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} navigation={navigation} tx={tx} />
-          ))}
+         
         </View>
       </Animated.ScrollView>
     </View>
@@ -1154,5 +1196,93 @@ const styles = StyleSheet.create({
     color: "#15803D",
     fontSize: 12,
     fontWeight: "900",
+  },
+  // --- Running Bookings Horizontal Styles ---
+  runningScrollerContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    gap: 12,
+  },
+  runningCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#DCEBDD",
+    // Shadow for depth
+    shadowColor: "#08341E",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  runningImageWrapper: {
+    height: 100, // Compact height for horizontal card
+    width: "100%",
+  },
+  runningImage: {
+    width: "100%",
+    height: "100%",
+  },
+  runningStatusTag: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "#15803D",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  runningStatusText: {
+    color: "#FFFFFF",
+    fontSize: 9,
+    fontWeight: "900",
+  },
+  runningBody: {
+    padding: 12,
+  },
+  runningType: {
+    color: "#12351F",
+    fontSize: 15,
+    fontWeight: "900",
+  },
+  runningMeta: {
+    color: "#647A69",
+    fontSize: 12,
+    marginTop: 2,
+    fontWeight: "700",
+  },
+  runningFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: "#F1F7F0",
+  },
+  runningPay: {
+    color: "#15803D",
+    fontSize: 13,
+    fontWeight: "900",
+  },
+  trackBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  trackText: {
+    color: "#15803D",
+    fontSize: 12,
+    fontWeight: "900",
+  },
+  runningLivePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 999,
+    backgroundColor: "#F0FDFA", // Slightly different color for "Active"
   },
 });
