@@ -4,15 +4,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import CustomText from '../components/CustomText';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
+import useHideTabBarOnScroll from '../hooks/useHideTabBarOnScroll';
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -226,6 +226,8 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function BookingsScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  const { bottomNavHidden, handleScroll } = useHideTabBarOnScroll();
   const [activeTab, setActiveTab] = useState('new');
   const [bookings, setBookings] = useState(BOOKINGS);
 
@@ -283,8 +285,13 @@ export default function BookingsScreen({ navigation }) {
       {/* ── Cards ── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: bottomNavHidden ? insets.bottom + 22 : insets.bottom + 110 },
+        ]}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
       >
         {filtered.length === 0 ? (
           <Animated.View entering={FadeInDown.duration(400)} style={styles.emptyState}>

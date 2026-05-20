@@ -98,11 +98,11 @@ const styles = StyleSheet.create({
 
     // Bottom Section
     bottomContainer: {
-        backgroundColor: '#ffffffd2',
+        // backgroundColor: '#ffffffd2',
         paddingHorizontal: 40,
         paddingVertical: 30,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        // borderTopLeftRadius: 20,
+        // borderTopRightRadius: 20,
     },
 
     primaryBtn: {

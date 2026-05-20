@@ -4,15 +4,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import CustomText from '../components/CustomText';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
+import useHideTabBarOnScroll from '../hooks/useHideTabBarOnScroll';
 
 // ─── Profile completion steps ─────────────────────────────────────────────────
 const COMPLETION_STEPS = [
@@ -77,6 +77,8 @@ function MenuItem({ item, onPress, isLast }) {
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function ProfileScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  const { bottomNavHidden, handleScroll } = useHideTabBarOnScroll();
   const completionPct = 66;
 
   const handleMenuPress = (id) => {
@@ -95,7 +97,12 @@ export default function ProfileScreen({ navigation }) {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: bottomNavHidden ? insets.bottom + 22 : insets.bottom + 110 },
+        ]}
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
       >
 
         {/* ── Profile Card ── */}

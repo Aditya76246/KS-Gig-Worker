@@ -1,311 +1,187 @@
-import React, { useState, useRef } from 'react';
-import { Animated, Pressable, StatusBar, StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Pressable, StatusBar, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CustomText from './CustomText';
-import globalStyles from '../styles/globalStyles';
-import { color } from '../styles/theme';
 
-// ─── Animated Online/Offline Toggle ───────────────────────────────────────────
-function StatusToggle({ isOnline, onToggle }) {
-  const anim = useRef(new Animated.Value(isOnline ? 1 : 0)).current;
-
-  const handlePress = () => {
-    Animated.spring(anim, {
-      toValue: isOnline ? 0 : 1,
-      useNativeDriver: false,
-      tension: 80,
-      friction: 8,
-    }).start();
-    onToggle();
-  };
-
-  const trackColor = anim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['rgba(255,255,255,0.18)', color.ORANGE],
-  });
-
-  const thumbTranslate = anim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [2, 18],
-  });
-
-  const thumbScale = anim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [1, 0.85, 1],
-  });
-
-  const dotOpacity = anim.interpolate({
-    inputRange: [0, 0.6, 1],
-    outputRange: [0, 0, 1],
-  });
-
+function DutySwitch({ dutyOn, onPress }) {
   return (
     <Pressable
-      onPress={handlePress}
+      onPress={onPress}
       accessibilityRole="switch"
-      accessibilityState={{ checked: isOnline }}
-      accessibilityLabel={isOnline ? 'Online' : 'Offline'}
-      style={styles.toggleWrapper}
-      android_ripple={{ color: 'rgba(255,255,255,0.15)', borderless: true, radius: 22 }}
+      accessibilityState={{ checked: dutyOn }}
+      accessibilityLabel={dutyOn ? 'Online' : 'Offline'}
+      style={styles.dutyWrap}
+      android_ripple={{ color: 'rgba(255,255,255,0.18)', borderless: true, radius: 24 }}
     >
-      <CustomText style={[styles.toggleLabel, isOnline && styles.toggleLabelActive]}>
-        {isOnline ? 'Online' : 'Away'}
+      <CustomText style={[styles.dutyText, dutyOn && styles.dutyTextActive]}>
+        {dutyOn ? 'ONLINE' : 'OFFLINE'}
       </CustomText>
-
-      <Animated.View style={[styles.track, { backgroundColor: trackColor }]}>
-        <Animated.View
-          style={[
-            styles.thumb,
-            {
-              transform: [
-                { translateX: thumbTranslate },
-                { scale: thumbScale },
-              ],
-            },
-          ]}
-        >
-          <Animated.View style={[styles.thumbDot, { opacity: dotOpacity }]} />
-        </Animated.View>
-      </Animated.View>
+      <View style={[styles.switchTrack, dutyOn && styles.switchTrackActive]}>
+        <View style={[styles.switchThumb, dutyOn && styles.switchThumbActive]}>
+          <View style={[styles.switchDot, dutyOn && styles.switchDotActive]} />
+        </View>
+      </View>
     </Pressable>
   );
 }
 
 // ─── Main Header ──────────────────────────────────────────────────────────────
 export default function CustomHeader({
-  userName = 'Sourav',
-  subtitle = 'Welcome to',
-  brandName = 'KisanSahakar',
+  userName = 'Aditya Soni',
   location = 'Hyderabad, Telangana',
-  notificationCount = 2,
-  onNotificationPress,
-  onLocationPress,
+  liveJobs = '3 live jobs',
+  rating = '4.8',
 }) {
-  const [isOnline, setIsOnline] = useState(true);
+  const [dutyOn, setDutyOn] = useState(true);
+  const insets = useSafeAreaInsets();
+  const firstName = userName.split(' ')[0];
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor={color.GREEN_DARK} />
+    <View style={[styles.headerWrap, { paddingTop: insets.top + 6 }]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F4FAF2" />
 
-      <View style={styles.container}>
+      <LinearGradient
+        colors={['#0B3B21', '#13753A']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerCard}
+      >
+        <View style={styles.headerLeft}>
+          <Image
+            source={require('../../assets/images/logo/iconpngplain.png')}
+            style={styles.logoIcon}
+            resizeMode="contain"
+          />
 
-        {/* Left — copy stack */}
-        <View style={styles.copy}>
-
-          {/* Location row with chevron */}
-          <Pressable
-            onPress={onLocationPress}
-            style={styles.locationRow}
-            android_ripple={{ color: 'rgba(255,255,255,0.12)', borderless: false }}
-            accessibilityLabel="Change location"
-          >
-            <Ionicons name="location-sharp" size={13} color={color.ORANGE} />
-            <CustomText style={styles.locationText} numberOfLines={1} ellipsizeMode="tail">
-              {location}
+          <View style={styles.headerCopy}>
+            <CustomText style={styles.headerTitle} numberOfLines={1}>
+              Hi, {firstName} - {location}
             </CustomText>
-            <Ionicons name="chevron-down" size={12} color="rgba(255,255,255,0.5)" />
-          </Pressable>
-
-          {/* Welcome message */}
-          <View style={styles.subtitleRow}>
-            <CustomText style={styles.subtitle}>{subtitle} </CustomText>
-            <CustomText style={styles.brand}>{brandName}</CustomText>
+            <View style={styles.metaRow}>
+              <View style={styles.metaPill}>
+                <Ionicons name="briefcase" size={11} color="#DCFCE7" />
+                <CustomText style={styles.metaText}>{liveJobs}</CustomText>
+              </View>
+              <View style={styles.metaPill}>
+                <Ionicons name="star" size={11} color="#FCD34D" />
+                <CustomText style={styles.metaText}>{rating}</CustomText>
+              </View>
+            </View>
           </View>
         </View>
 
-        {/* Right — actions */}
-        <View style={styles.actions}>
-          {/* Notification bell */}
-          <Pressable
-            onPress={onNotificationPress}
-            style={styles.bellButton}
-            android_ripple={{ color: 'rgba(255,255,255,0.15)', borderless: true, radius: 22 }}
-            accessibilityLabel="Notifications"
-          >
-            <Ionicons name="notifications" size={20} color="#fff" />
-            {notificationCount > 0 && (
-              <View style={styles.badge}>
-                <CustomText style={styles.badgeText}>
-                  {notificationCount > 9 ? '9+' : notificationCount}
-                </CustomText>
-              </View>
-            )}
-          </Pressable>
-
-          {/* Divider */}
-          <View style={styles.divider} />
-
-          {/* Status toggle */}
-          <StatusToggle isOnline={isOnline} onToggle={() => setIsOnline(v => !v)} />
-        </View>
-      </View>
-
-      {/* Bottom accent line */}
-      <View style={styles.accentLine} />
-    </SafeAreaView>
+        <DutySwitch dutyOn={dutyOn} onPress={() => setDutyOn((value) => !value)} />
+      </LinearGradient>
+    </View>
   );
 }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: color.GREEN_DARK,
+  headerWrap: {
+    backgroundColor: '#F4FAF2',
+    paddingHorizontal: 14,
+    paddingBottom: 6,
   },
-
-  container: {
-    minHeight: 60,
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 12,
-    backgroundColor: color.GREEN_DARK,
+  headerCard: {
+    minHeight: 58,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.18)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 18,
+    elevation: 8,
+  },
+  headerLeft: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-
-  // ── Copy (left stack) ──
-  copy: {
-    flex: 1,
-    gap: 3,
+  logoIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 13,
+    backgroundColor: 'rgba(255,255,255,0.13)',
   },
-
-  // ── Location row ──
-  locationRow: {
+  headerCopy: {
+    flex: 1,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '900',
+    marginTop: 1,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    marginTop: 5,
+  },
+  metaPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    alignSelf: 'flex-start',    // shrink-wrap width to content
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.13)',
   },
-
-  locationText: {
-    color: '#fff',
-   ...globalStyles.f10Bold,
-    letterSpacing: 0.2,
-    flexShrink: 1,              // allows text to truncate with ellipsis
-    maxWidth: 160,              // hard cap before chevron gets squeezed
+  metaText: {
+    color: '#ECFDF5',
+    fontSize: 10,
+    fontWeight: '900',
   },
-
-  // ── Welcome row ──
-  subtitleRow: {
-    flexDirection: 'row',
+  dutyWrap: {
     alignItems: 'center',
+    paddingLeft: 10,
   },
-
-  subtitle: {
-    color: 'rgba(255,255,255,0.55)',
-    ...globalStyles.f12Regular,
+  dutyText: {
+    display: 'none',
   },
-
-  brand: {
-    color: color.ORANGE,
-    ...globalStyles.f12Bold,
-    letterSpacing: 0.4,
+  dutyTextActive: {
+    color: '#FBBF24',
   },
-
-  // ── Actions ──
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-
-  bellButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    alignItems: 'center',
+  switchTrack: {
+    width: 44,
+    height: 26,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.24)',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    padding: 3,
   },
-
-  badge: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    minWidth: 16,
-    height: 16,
-    paddingHorizontal: 3,
-    borderRadius: 8,
-    backgroundColor: '#FF4757',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: color.GREEN_DARK,
+  switchTrackActive: {
+    backgroundColor: '#F59E0B',
   },
-
-  badgeText: {
-    color: '#fff',
-    fontSize: 9,
-    fontWeight: '700',
-    lineHeight: 11,
-  },
-
-  divider: {
-    width: 1,
-    height: 22,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderRadius: 1,
-  },
-
-  // ── Toggle ──
-  toggleWrapper: {
-    alignItems: 'center',
-    gap: 3,
-    paddingVertical: 2,
-  },
-
-  toggleLabel: {
-    color: 'rgba(255,255,255,0.45)',
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-  },
-
-  toggleLabelActive: {
-    color: color.ORANGE,
-  },
-
-  track: {
-    width: 40,
-    height: 22,
-    borderRadius: 11,
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-  },
-
-  thumb: {
-    position: 'absolute',
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-    elevation: 3,
+  switchThumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  thumbDot: {
+  switchThumbActive: {
+    transform: [{ translateX: 18 }],
+  },
+  switchDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: color.ORANGE,
+    backgroundColor: '#94A3B8',
   },
-
-  // ── Bottom accent ──
-  accentLine: {
-    height: 2,
-    marginHorizontal: 16,
-    borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.07)',
+  switchDotActive: {
+    backgroundColor: '#F59E0B',
   },
 });

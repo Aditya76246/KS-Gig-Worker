@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   Animated,
+  DeviceEventEmitter,
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -18,15 +19,14 @@ import HomeStackNavigator from './HomeStackNavigator';
 import BookingsStackNavigator from './BookingsStackNavigator';
 import EarningsStackNavigator from './EarningsStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
-import { color } from '../styles/theme';
 
 const Tab = createBottomTabNavigator();
 
 const TAB_CONFIG = [
   { name: 'HomeTab', label: 'Home', icon: 'home', iconOutline: 'home-outline' },
-  { name: 'BookingsTab', label: 'Bookings', icon: 'clipboard', iconOutline: 'clipboard-outline' },
-  { name: 'EarningsTab', label: 'Wallet', icon: 'cash', iconOutline: 'cash-outline' },
-  { name: 'ProfileTab', label: 'Profile', icon: 'person-circle', iconOutline: 'person-circle-outline' },
+  { name: 'BookingsTab', label: 'Jobs', icon: 'briefcase', iconOutline: 'briefcase-outline' },
+  { name: 'EarningsTab', label: 'Wallet', icon: 'wallet', iconOutline: 'wallet-outline' },
+  { name: 'ProfileTab', label: 'Profile', icon: 'person', iconOutline: 'person-outline' },
 ];
 
 const TAB_ROOT_ROUTES = {
@@ -72,8 +72,8 @@ function TabButton({ tab, isFocused, onPress, onLongPress }) {
     ]).start();
   }, [isFocused]);
 
-  const bgColor = bgAnim.interpolate({ inputRange: [0, 1], outputRange: ['transparent', color.GREEN_LIGHT] });
-  const iconColor = isFocused ? color.GREEN : '#9aab96';
+  const bgColor = bgAnim.interpolate({ inputRange: [0, 1], outputRange: ['#f3f7ef', '#12733a'] });
+  const iconColor = isFocused ? '#ffffff' : '#78927b';
   const iconName = isFocused ? tab.icon : tab.iconOutline;
 
   return (
@@ -81,7 +81,7 @@ function TabButton({ tab, isFocused, onPress, onLongPress }) {
       onPress={onPress}
       onLongPress={onLongPress}
       activeOpacity={0.8}
-      style={styles.tabButton}
+      style={[styles.tabButton, isFocused && styles.tabButtonActive]}
     >
       <Animated.View style={[styles.tabInner, { transform: [{ scale: scaleAnim }, { translateY }] }]}>
         <Animated.View style={[styles.iconPill, { backgroundColor: bgColor }]}>
@@ -90,7 +90,7 @@ function TabButton({ tab, isFocused, onPress, onLongPress }) {
         <CustomText
           style={[
             styles.tabLabel,
-            { color: isFocused ? color.GREEN : '#9aab96' },
+            { color: isFocused ? '#0f6b34' : '#8ca18d' },
             isFocused && styles.tabLabelActive,
           ]}
         >
@@ -105,10 +105,43 @@ function TabButton({ tab, isFocused, onPress, onLongPress }) {
 
 function CustomTabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
+  const hiddenAnim = useRef(new Animated.Value(0)).current;
+  const isHiddenRef = useRef(false);
+  const [tabBarHidden, setTabBarHidden] = useState(false);
 
   const focusedRoute = state.routes[state.index];
   const focusedDescriptor = descriptors[focusedRoute.key];
   const tabBarStyle = focusedDescriptor?.options?.tabBarStyle;
+
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener('ks:setTabBarHidden', (shouldHide) => {
+      if (isHiddenRef.current === shouldHide) {
+        return;
+      }
+
+      isHiddenRef.current = shouldHide;
+      setTabBarHidden(shouldHide);
+      Animated.timing(hiddenAnim, {
+        toValue: shouldHide ? 1 : 0,
+        duration: 230,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => subscription.remove();
+  }, [hiddenAnim]);
+
+  useEffect(() => {
+    if (isHiddenRef.current) {
+      isHiddenRef.current = false;
+      setTabBarHidden(false);
+      Animated.timing(hiddenAnim, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [focusedRoute.name, hiddenAnim]);
 
   // Inner screens signal { display: 'none' } — honour it.
   if (isInnerStackScreen(focusedRoute) || tabBarStyle?.display === 'none') {
@@ -116,7 +149,27 @@ function CustomTabBar({ state, descriptors, navigation }) {
   }
 
   return (
-    <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom }]}>
+    <Animated.View
+      pointerEvents={tabBarHidden ? 'none' : 'auto'}
+      style={[
+        styles.tabBarWrapper,
+        {
+          bottom: insets.bottom + 10,
+          opacity: hiddenAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1, 0],
+          }),
+          transform: [
+            {
+              translateY: hiddenAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 112 + insets.bottom],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
       <View style={styles.tabBar}>
         {state.routes.map((route, index) => {
           const tab = TAB_CONFIG.find((t) => t.name === route.name);
@@ -157,7 +210,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
           );
         })}
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -172,6 +225,10 @@ export default function MainTabNavigator() {
         // Individual inner screens set tabBarStyle: { display: 'none' } which
         // also signals us to hide the header (we do that check below).
         header: ({ options }) => {
+          if (route.name === 'HomeTab') {
+            return null;
+          }
+
           // Hide CustomHeader when inner screen requests tab bar hidden
           if (isInnerStackScreen(route) || options?.tabBarStyle?.display === 'none') {
             return null;
@@ -192,34 +249,45 @@ export default function MainTabNavigator() {
 
 const styles = StyleSheet.create({
   tabBarWrapper: {
-    backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#e5eadf',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 12,
+    position: 'absolute',
+    left: 18,
+    right: 18,
+    backgroundColor: 'transparent',
   },
   tabBar: {
     flexDirection: 'row',
-    paddingTop: 18,
+    minHeight: 74,
     paddingHorizontal: 8,
+    paddingTop: 8,
+    paddingBottom: 9,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.98)',
+    borderWidth: 1,
+    borderColor: '#dfeade',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.16,
+    shadowRadius: 24,
+    elevation: 18,
   },
   tabButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 6,
+    minHeight: 56,
+    borderRadius: 22,
+  },
+  tabButtonActive: {
+    backgroundColor: '#f2fbf3',
   },
   tabInner: {
     alignItems: 'center',
-    gap: 3,
+    gap: 4,
   },
   iconPill: {
     width: 48,
-    height: 32,
-    borderRadius: 16,
+    height: 34,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
