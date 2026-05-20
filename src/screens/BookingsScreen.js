@@ -4,9 +4,12 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
+  StatusBar,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import CustomText from '../components/CustomText';
@@ -15,8 +18,7 @@ import { color } from '../styles/theme';
 import useHideTabBarOnScroll from '../hooks/useHideTabBarOnScroll';
 import { useTranslation } from '../localization/i18n';
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
+// ─── Mock Data (Unchanged) ──────────────────────────────────────────────────
 const BOOKINGS = [
   {
     id: 'KA-8821',
@@ -86,145 +88,102 @@ const BOOKINGS = [
 ];
 
 const TABS = [
-  { key: 'new',       label: 'New',       statusColor: color.GREEN },
-  { key: 'accepted',  label: 'Accepted',  statusColor: color.YELLOW_TEXT },
-  { key: 'ongoing',   label: 'Ongoing',   statusColor: '#923357' },
-  { key: 'completed', label: 'Completed', statusColor: color.TEXT_MUTED },
+  { key: 'new', label: 'New' },
+  { key: 'accepted', label: 'Accepted' },
+  { key: 'ongoing', label: 'Ongoing' },
+  { key: 'completed', label: 'Completed' },
 ];
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Sub-components (Themed) ─────────────────────────────────────────────────
 
-function StatusChip({ status, tx }) {
-  const map = {
-    new:       { label: tx('New'),       bg: color.GREEN_BG,   text: color.GREEN },
-    accepted:  { label: tx('Accepted'),  bg: color.YELLOW_BG,  text: color.YELLOW_TEXT },
-    ongoing:   { label: tx('Ongoing'),   bg: '#fce4ec',        text: '#923357' },
-    completed: { label: tx('Completed'), bg: color.AVATAR_BG,  text: color.TEXT_MUTED },
-  };
-  const s = map[status] || map.new;
-  return (
-    <View style={[styles.chip, { backgroundColor: s.bg }]}>
-      <CustomText style={[styles.chipText, { color: s.text }]}>{s.label}</CustomText>
-    </View>
-  );
-}
-
-function DetailRow({ icon, text, lib = 'Ionicons' }) {
-  const IconComp = lib === 'MaterialCommunityIcons' ? MaterialCommunityIcons : Ionicons;
+function DetailRow({ icon, text, tx }) {
   return (
     <View style={styles.detailItem}>
-      <IconComp name={icon} size={14} color={color.GREEN} />
-      <CustomText style={styles.detailText}>{text}</CustomText>
+      <Ionicons name={icon} size={14} color="#15803D" />
+      <CustomText style={styles.detailText} numberOfLines={1}>{text}</CustomText>
     </View>
   );
 }
 
-function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0, tx }) {
+function BookingCard({ booking, onAccept, onReject, onViewDetails, delay, tx }) {
+  const isNew = booking.status === 'new';
+  
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)} style={styles.card}>
-
-      {/* ── Header ── */}
+      {/* Card Header */}
       <View style={styles.cardHeader}>
-        <View style={styles.avatarBox}>
-          <Ionicons name="person" size={26} color="#aaa" />
+        <View style={styles.avatarCircle}>
+          <Ionicons name="person" size={24} color="#CBD5E1" />
         </View>
         <View style={styles.cardHeaderInfo}>
           <CustomText style={styles.farmerName}>{booking.farmerName}</CustomText>
-          <CustomText style={styles.bookingId}>ID: #{booking.id}</CustomText>
+          <View style={styles.idBadge}>
+            <CustomText style={styles.bookingId}>ID: #{booking.id}</CustomText>
+          </View>
         </View>
-        <View style={[styles.priceBadge, booking.status !== 'new' && styles.priceBadgeNeutral]}>
-          <CustomText style={[
-            styles.priceText,
-            booking.status !== 'new' && styles.priceTextNeutral,
-          ]}>
-            {booking.price}
-          </CustomText>
+        <View style={[styles.priceTag, !isNew && styles.priceTagInactive]}>
+          <CustomText style={[styles.priceValue, !isNew && styles.priceValueInactive]}>{booking.price}</CustomText>
         </View>
       </View>
 
-      {/* ── Info Grid ── */}
+      {/* Info Grid (Light themed boxes) */}
       <View style={styles.infoGrid}>
-        <DetailRow icon="construct-outline"     text={tx(booking.service)} />
-        <DetailRow icon="calendar-outline"      text={tx(booking.date)} />
-        <DetailRow icon="location-outline"      text={tx(booking.distance)} />
-        <DetailRow icon="map-outline"           text={tx(booking.location)} />
+        <DetailRow icon="construct-outline" text={tx(booking.service)} />
+        <DetailRow icon="calendar-outline" text={tx(booking.date)} />
+        <DetailRow icon="location-outline" text={tx(booking.distance)} />
+        <DetailRow icon="map-outline" text={tx(booking.location)} />
       </View>
 
-      {/* ── Description (new/accepted only) ── */}
-      {(booking.status === 'new' || booking.status === 'accepted') && (
-        <CustomText style={styles.description} numberOfLines={2}>
-          {tx(booking.description)}
-        </CustomText>
-      )}
+      {/* Action Area */}
+      <View style={styles.actionContainer}>
+        {isNew && (
+          <>
+            <TouchableOpacity style={styles.acceptBtn} onPress={() => onAccept(booking.id)} activeOpacity={0.9}>
+              <LinearGradient colors={['#16A34A', '#15803D']} style={styles.btnGradient}>
+                <Ionicons name="checkmark-circle" size={16} color="#FFF" />
+                <CustomText style={styles.btnText}>{tx('Accept')}</CustomText>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailsBtn} onPress={() => onViewDetails(booking)}>
+              <CustomText style={styles.detailsBtnText}>{tx('View Details')}</CustomText>
+            </TouchableOpacity>
+          </>
+        )}
 
-      {/* ── Actions ── */}
-      {booking.status === 'new' && (
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.acceptBtn}
-            onPress={() => onAccept(booking.id)}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="checkmark-circle-outline" size={18} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>{tx('Accept')}</CustomText>
+        {booking.status === 'accepted' && (
+          <>
+            <TouchableOpacity style={styles.acceptBtn} onPress={() => onViewDetails(booking)}>
+              <LinearGradient colors={['#16A34A', '#15803D']} style={styles.btnGradient}>
+                <Ionicons name="eye" size={16} color="#FFF" />
+                <CustomText style={styles.btnText}>{tx('Details')}</CustomText>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rejectBtn} onPress={() => onReject(booking.id)}>
+              <CustomText style={styles.rejectBtnText}>{tx('Reject')}</CustomText>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {booking.status === 'ongoing' && (
+          <TouchableOpacity style={styles.trackBtn} onPress={() => onViewDetails(booking)}>
+             <LinearGradient colors={['#0369A1', '#075985']} style={styles.btnGradient}>
+                <Ionicons name="navigate" size={16} color="#FFF" />
+                <CustomText style={styles.btnText}>{tx('Track Job')}</CustomText>
+              </LinearGradient>
           </TouchableOpacity>
+        )}
 
-          <TouchableOpacity
-            style={styles.viewBtn}
-            onPress={() => onViewDetails(booking)}
-            activeOpacity={0.8}
-          >
-            <CustomText style={styles.viewText}>{tx('View Details')}</CustomText>
+        {booking.status === 'completed' && (
+          <TouchableOpacity style={styles.summaryBtn} onPress={() => onViewDetails(booking)}>
+            <CustomText style={styles.summaryBtnText}>{tx('View Summary')}</CustomText>
           </TouchableOpacity>
-        </View>
-      )}
-
-      {booking.status === 'accepted' && (
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.acceptBtn}
-            onPress={() => onViewDetails(booking)}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="eye-outline" size={18} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>{tx('View Details')}</CustomText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.rejectBtn}
-            onPress={() => onReject(booking.id)}
-            activeOpacity={0.8}
-          >
-            <CustomText style={styles.rejectText}>{tx('Reject')}</CustomText>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {booking.status === 'ongoing' && (
-        <TouchableOpacity
-          style={[styles.acceptBtn, { flex: 1 }]}
-          onPress={() => onViewDetails(booking)}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="navigate-outline" size={18} color={color.WHITE} />
-          <CustomText style={styles.acceptText}>{tx('Track Job')}</CustomText>
-        </TouchableOpacity>
-      )}
-
-      {booking.status === 'completed' && (
-        <TouchableOpacity
-          style={styles.viewBtnFull}
-          onPress={() => onViewDetails(booking)}
-          activeOpacity={0.8}
-        >
-          <CustomText style={styles.viewText}>{tx('View Summary')}</CustomText>
-        </TouchableOpacity>
-      )}
+        )}
+      </View>
     </Animated.View>
   );
 }
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
+// ─── Main Screen ─────────────────────────────────────────────────────────────
 
 export default function BookingsScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -234,77 +193,61 @@ export default function BookingsScreen({ navigation }) {
   const [bookings, setBookings] = useState(BOOKINGS);
 
   const handleAccept = (id) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status: 'accepted' } : b))
-    );
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'accepted' } : b));
   };
 
   const handleReject = (id) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status: 'completed' } : b))
-    );
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'completed' } : b));
   };
 
   const handleViewDetails = (booking) => {
     navigation.navigate('BookingDetail', { booking });
   };
 
-  const filtered = bookings.filter((b) => b.status === activeTab);
-
-  const countFor = (key) => bookings.filter((b) => b.status === key).length;
+  const filtered = bookings.filter(b => b.status === activeTab);
+  const countFor = (key) => bookings.filter(b => b.status === key).length;
 
   return (
     <View style={styles.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#082F1B" />
 
-      {/* ── Status Tabs ── */}
-      <View style={styles.tabsWrapper}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabsScroll}
-        >
+      {/* ── Floating Tabs ── */}
+      <View style={styles.tabsContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
           {TABS.map((tab) => {
             const count = countFor(tab.key);
             const active = activeTab === tab.key;
             return (
               <TouchableOpacity
                 key={tab.key}
-                style={[styles.tab, active && styles.tabActive]}
+                style={[styles.tabBtn, active && styles.tabBtnActive]}
                 onPress={() => setActiveTab(tab.key)}
-                activeOpacity={0.75}
               >
-                <CustomText style={[styles.tabLabel, active && { color: color.GREEN }]}>
+                <CustomText style={[styles.tabLabel, active && styles.tabLabelActive]}>
                   {tx(tab.label)}
                   {count > 0 ? ` (${count})` : ''}
                 </CustomText>
-                {active && <View style={styles.tabUnderline} />}
               </TouchableOpacity>
             );
           })}
         </ScrollView>
       </View>
 
-      {/* ── Cards ── */}
       <ScrollView
-        style={styles.scroll}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           styles.scrollContent,
           { paddingBottom: bottomNavHidden ? insets.bottom + 22 : insets.bottom + 110 },
         ]}
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={handleScroll}
       >
         {filtered.length === 0 ? (
-          <Animated.View entering={FadeInDown.duration(400)} style={styles.emptyState}>
-            <Ionicons name="clipboard-outline" size={52} color={color.BORDER_LIGHT} />
-            <CustomText style={styles.emptyTitle}>{tx('No bookings here')}</CustomText>
-            <CustomText style={styles.emptySubtitle}>
-              {activeTab === 'new'
-                ? tx('New booking requests will appear here')
-                : tx('You have no {{status}} bookings', { status: tx(TABS.find((tab) => tab.key === activeTab)?.label ?? activeTab).toLowerCase() })}
-            </CustomText>
-          </Animated.View>
+          <View style={styles.emptyState}>
+            <Ionicons name="calendar-clear-outline" size={60} color="#CBD5E1" />
+            <CustomText style={styles.emptyTitle}>{tx('No bookings found')}</CustomText>
+            <CustomText style={styles.emptySubtitle}>{tx('Your active and history will appear here')}</CustomText>
+          </View>
         ) : (
           filtered.map((booking, i) => (
             <BookingCard
@@ -313,129 +256,187 @@ export default function BookingsScreen({ navigation }) {
               onAccept={handleAccept}
               onReject={handleReject}
               onViewDetails={handleViewDetails}
-              delay={i * 60}
+              delay={i * 80}
               tx={tx}
             />
           ))
         )}
-        <View style={{ height: 20 }} />
       </ScrollView>
     </View>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: color.SURFACE,
+    backgroundColor: '#F4FAF2',
   },
-
-  // ── Tabs ──
-  tabsWrapper: {
-    backgroundColor: color.WHITE,
-    borderBottomWidth: 1,
-    borderBottomColor: color.BORDER_LIGHT,
+  // Header
+  slimHero: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
   },
-  tabsScroll: {
-    paddingHorizontal: 16,
+  headerTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  tab: {
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-    marginRight: 24,
-    position: 'relative',
-  },
-  tabActive: {},
-  tabLabel: {
-    ...globalStyles.f12Bold,
-    color: color.TEXT_MUTED,
-  },
-  tabUnderline: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2.5,
-    borderRadius: 99,
-    backgroundColor: color.GREEN,
-  },
-
-  // ── Scroll ──
-  scroll: { flex: 1 },
-  scrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    gap: 14,
-  },
-
-  // ── Card ──
-  card: {
-    backgroundColor: color.WHITE,
-    borderRadius: 18,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: color.BORDER_LIGHT,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+  brandGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
-
-  // ── Card Header ──
+  logoSmall: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  brandTitle: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '900',
+  },
+  brandSubTitle: {
+    color: '#BBF7D0',
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  headerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 6,
+  },
+  headerBadgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  pulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#FBBF24',
+  },
+  // Tabs
+  tabsContainer: {
+    marginTop: 15,
+    zIndex: 10,
+  },
+  tabsScroll: {
+    paddingHorizontal: 20,
+    gap: 10,
+  },
+  tabBtn: {
+    backgroundColor: '#FFF',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E8F5E9',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  tabBtnActive: {
+    backgroundColor: '#116834',
+    borderColor: '#116834',
+  },
+  tabLabel: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#647A69',
+  },
+  tabLabelActive: {
+    color: '#FFF',
+  },
+  // Scroll Content
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    gap: 15,
+  },
+  // Card Styling
+  card: {
+    backgroundColor: '#FFF',
+    borderRadius: 24,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E8F5E9',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 15,
+    elevation: 6,
+  },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
-  avatarBox: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
-    backgroundColor: color.AVATAR_BG,
+  avatarCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 15,
+    backgroundColor: '#F1F5F9',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
   },
   cardHeaderInfo: {
     flex: 1,
-    gap: 3,
   },
   farmerName: {
-    ...globalStyles.f12Bold,
-    color: color.TEXT_MAIN,
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#102A18',
+  },
+  idBadge: {
+    backgroundColor: '#F0FDF4',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginTop: 2,
   },
   bookingId: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_MUTED,
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#16A34A',
   },
-  priceBadge: {
-    backgroundColor: color.YELLOW_BG,
+  priceTag: {
+    backgroundColor: '#FFF9E6',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 30,
+    borderRadius: 12,
   },
-  priceBadgeNeutral: {
-    backgroundColor: color.GREEN_BG,
+  priceTagInactive: {
+    backgroundColor: '#F1F5F9',
   },
-  priceText: {
-    ...globalStyles.f12Bold,
-    color: color.YELLOW_TEXT,
+  priceValue: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#F59E0B',
   },
-  priceTextNeutral: {
-    color: color.GREEN,
+  priceValueInactive: {
+    color: '#647A69',
   },
-
-  // ── Info Grid ──
+  // Info Grid
   infoGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: color.SURFACE_LOW,
-    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 18,
     padding: 12,
+    marginTop: 15,
     gap: 10,
   },
   detailItem: {
@@ -445,99 +446,94 @@ const styles = StyleSheet.create({
     width: '47%',
   },
   detailText: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_SUB,
-    flexShrink: 1,
+    fontSize: 12,
+    color: '#475569',
+    fontWeight: '600',
   },
-
-  // ── Description ──
-  description: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_SUB,
-    lineHeight: 18,
-  },
-
-  // ── Actions ──
-  actions: {
+  // Actions
+  actionContainer: {
     flexDirection: 'row',
     gap: 10,
+    marginTop: 18,
   },
   acceptBtn: {
     flex: 1,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  btnGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    backgroundColor: color.GREEN,
-    borderRadius: 12,
-    paddingVertical: 13,
+    gap: 8,
+    paddingVertical: 14,
   },
-  acceptText: {
-    ...globalStyles.f12Bold,
-    color: color.WHITE,
+  btnText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#FFF',
   },
-  viewBtn: {
+  detailsBtn: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: color.GREEN,
-    borderRadius: 12,
-    paddingVertical: 13,
+    borderColor: '#15803D',
   },
-  viewBtnFull: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: color.BORDER_LIGHT,
-    borderRadius: 12,
-    paddingVertical: 13,
-  },
-  viewText: {
-    ...globalStyles.f12Bold,
-    color: color.GREEN,
+  detailsBtnText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#15803D',
   },
   rejectBtn: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: color.RED_REJECT,
-    borderRadius: 12,
-    paddingVertical: 13,
+    borderColor: '#E11D48',
   },
-  rejectText: {
-    ...globalStyles.f12Bold,
-    color: color.RED_REJECT,
+  rejectBtnText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#E11D48',
   },
-
-  // ── Chip ──
-  chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 30,
-    alignSelf: 'flex-start',
+  trackBtn: {
+    flex: 1,
+    borderRadius: 14,
+    overflow: 'hidden',
   },
-  chipText: {
-    ...globalStyles.f10Bold,
-  },
-
-  // ── Empty State ──
-  emptyState: {
+  summaryBtn: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
-    gap: 10,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    paddingVertical: 14,
+  },
+  summaryBtnText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#647A69',
+  },
+  // Empty State
+  emptyState: {
+    marginTop: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyTitle: {
-    ...globalStyles.f12Bold,
-    color: color.TEXT_MUTED,
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#12351F',
+    marginTop: 15,
   },
   emptySubtitle: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_MUTED,
+    fontSize: 14,
+    color: '#647A69',
+    marginTop: 5,
     textAlign: 'center',
-    paddingHorizontal: 32,
   },
 });

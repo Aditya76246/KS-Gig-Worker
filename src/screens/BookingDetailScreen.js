@@ -5,9 +5,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Image,
+  StatusBar,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import CustomText from '../components/CustomText';
@@ -16,7 +19,7 @@ import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
 import { useTranslation } from '../localization/i18n';
 
-// ─── Info Row helper ──────────────────────────────────────────────────────────
+// ─── Sub-components (Themed) ──────────────────────────────────────────────────
 
 function InfoRow({ icon, label, value, lib = 'Ionicons', accent = false }) {
   const IconComp = lib === 'MaterialCommunityIcons' ? MaterialCommunityIcons
@@ -25,7 +28,7 @@ function InfoRow({ icon, label, value, lib = 'Ionicons', accent = false }) {
   return (
     <View style={styles.infoRow}>
       <View style={styles.infoIconBox}>
-        <IconComp name={icon} size={18} color={color.GREEN} />
+        <IconComp name={icon} size={18} color="#15803D" />
       </View>
       <View style={styles.infoText}>
         <CustomText style={styles.infoLabel}>{label}</CustomText>
@@ -37,8 +40,6 @@ function InfoRow({ icon, label, value, lib = 'Ionicons', accent = false }) {
   );
 }
 
-// ─── Section Card helper ──────────────────────────────────────────────────────
-
 function SectionCard({ title, children, delay = 0 }) {
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)} style={styles.sectionCard}>
@@ -48,14 +49,12 @@ function SectionCard({ title, children, delay = 0 }) {
   );
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
-
 function StatusBadge({ status, tx }) {
   const map = {
-    new:       { label: tx('New Request'), bg: color.GREEN_BG,   text: color.GREEN,      icon: 'radio-button-on-outline' },
-    accepted:  { label: tx('Accepted'),    bg: color.YELLOW_BG,  text: color.YELLOW_TEXT, icon: 'checkmark-circle-outline' },
-    ongoing:   { label: tx('Ongoing'),     bg: '#fce4ec',        text: '#923357',        icon: 'time-outline' },
-    completed: { label: tx('Completed'),   bg: color.GREEN_BG,   text: color.GREEN,      icon: 'checkmark-done-circle-outline' },
+    new:       { label: tx('New Request'), bg: '#F0FDF4',   text: '#16A34A',      icon: 'radio-button-on' },
+    accepted:  { label: tx('Accepted'),    bg: '#FFF9E6',  text: '#D97706', icon: 'checkmark-circle' },
+    ongoing:   { label: tx('Ongoing'),     bg: '#FDF2F8',        text: '#9D174D',        icon: 'time' },
+    completed: { label: tx('Completed'),   bg: '#F0FDF4',   text: '#15803D',      icon: 'checkmark-done-circle' },
   };
   const s = map[status] || map.new;
   return (
@@ -71,57 +70,62 @@ function StatusBadge({ status, tx }) {
 export default function BookingDetailScreen({ navigation, route }) {
   const { booking } = route.params;
   const [status, setStatus] = useState(booking.status);
+  const insets = useSafeAreaInsets();
   const { tx } = useTranslation();
 
   const handleAccept = () => {
     Alert.alert(tx('Accept Booking Title'), tx('Accept job from {{name}}?', { name: booking.farmerName }), [
       { text: tx('Cancel'), style: 'cancel' },
-      {
-        text: tx('Accept'),
-        onPress: () => {
-          setStatus('accepted');
-          // TODO: API call
-        },
-      },
+      { text: tx('Accept'), onPress: () => setStatus('accepted') },
     ]);
   };
 
   const handleReject = () => {
     Alert.alert(tx('Reject Booking'), tx('Are you sure you want to reject this booking?'), [
       { text: tx('Cancel'), style: 'cancel' },
-      {
-        text: tx('Reject'),
-        style: 'destructive',
-        onPress: () => {
-          navigation.goBack();
-          // TODO: API call
-        },
-      },
+      { text: tx('Reject'), style: 'destructive', onPress: () => navigation.goBack() },
     ]);
   };
 
   return (
     <View style={styles.root}>
-      <StatusBar style="dark" />
+      <StatusBar barStyle="light-content" backgroundColor="#082F1B" />
 
-      {/* ── Header ── */}
-      <InnerScreenHeader navigation={navigation} title={tx('Booking Details')} />
+      {/* ── Slim Header Gradient ── */}
+     <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
+  <StatusBar barStyle="dark-content" backgroundColor="#F4FAF2" />
+  
+  <TouchableOpacity 
+    style={styles.backButton} 
+    onPress={() => navigation.goBack()}
+  >
+    <Ionicons name="chevron-back" size={24} color="#102A18" />
+  </TouchableOpacity>
+
+  <CustomText style={styles.headerTitle}>
+    {tx('Booking Details')}
+  </CustomText>
+
+  {/* Empty view to balance the title in the center */}
+  <View style={{ width: 40 }} /> 
+</View>
 
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
-
-        {/* ── Hero Card: Farmer ── */}
+        {/* ── Farmer Hero Card (Floating) ── */}
         <Animated.View entering={FadeInDown.delay(60).duration(400)} style={styles.heroCard}>
           <View style={styles.heroLeft}>
             <View style={styles.heroAvatar}>
-              <Ionicons name="person" size={40} color="#aaa" />
+              <Ionicons name="person" size={32} color="#CBD5E1" />
             </View>
             <View style={styles.heroInfo}>
               <CustomText style={styles.heroName}>{booking.farmerName}</CustomText>
-              <CustomText style={styles.heroId}>ID: #{booking.id}</CustomText>
-              <StatusBadge status={status} tx={tx} />
+              <View style={styles.idRow}>
+                <CustomText style={styles.heroId}>ID: #{booking.id}</CustomText>
+                <StatusBadge status={status} tx={tx} />
+              </View>
             </View>
           </View>
           <View style={styles.heroPriceBox}>
@@ -131,387 +135,388 @@ export default function BookingDetailScreen({ navigation, route }) {
         </Animated.View>
 
         {/* ── Job Details ── */}
-        <SectionCard title={tx('Job Details')} delay={120}>
-          <InfoRow
-            icon="construct-outline"
-            label={tx('Service Type')}
-            value={tx(booking.service)}
-          />
+        <SectionCard title={tx('Job Information')} delay={120}>
+          <InfoRow icon="construct-outline" label={tx('Service Type')} value={tx(booking.service)} />
           <View style={styles.divider} />
-          <InfoRow
-            icon="resize-outline"
-            label={tx('Area')}
-            value={booking.area}
-            accent
-          />
+          <InfoRow icon="resize-outline" label={tx('Area Size')} value={booking.area} accent />
           <View style={styles.divider} />
-          <InfoRow
-            icon="calendar-outline"
-            label={tx('Scheduled Date & Time')}
-            value={tx(booking.date)}
-          />
+          <InfoRow icon="calendar-outline" label={tx('Schedule')} value={tx(booking.date)} />
           <View style={styles.divider} />
-          <InfoRow
-            icon="map-outline"
-            label={tx('Location')}
-            value={tx(booking.location)}
-          />
-          <View style={styles.divider} />
-          <InfoRow
-            icon="location-outline"
-            label={tx('Distance from You')}
-            value={tx(booking.distance)}
-            accent
-          />
+          <InfoRow icon="location-outline" label={tx('Distance')} value={tx(booking.distance)} accent />
         </SectionCard>
 
         {/* ── Description ── */}
-        <SectionCard title={tx('Job Description')} delay={180}>
+        <SectionCard title={tx('Notes from Farmer')} delay={180}>
           <View style={styles.descriptionBox}>
-            <CustomText style={styles.descriptionText}>
-              {tx(booking.description)}
-            </CustomText>
+            <CustomText style={styles.descriptionText}>{tx(booking.description)}</CustomText>
           </View>
         </SectionCard>
 
         {/* ── Payment Breakdown ── */}
-        <SectionCard title={tx('Payment Breakdown')} delay={240}>
+        <SectionCard title={tx('Payment Summary')} delay={240}>
           <View style={styles.payRow}>
-            <CustomText style={styles.payLabel}>{tx('Base Rate')}</CustomText>
+            <CustomText style={styles.payLabel}>{tx('Base Work Rate')}</CustomText>
             <CustomText style={styles.payValue}>{booking.price}</CustomText>
           </View>
           <View style={styles.divider} />
-          <View style={styles.payRow}>
-            <CustomText style={styles.payLabel}>{tx('Platform Fee')}</CustomText>
-            <CustomText style={[styles.payValue, { color: color.TEXT_MUTED }]}>—</CustomText>
-          </View>
-          <View style={styles.divider} />
-          <View style={[styles.payRow, styles.payRowTotal]}>
-            <CustomText style={styles.payTotalLabel}>{tx('Total Estimate')}</CustomText>
-            <CustomText style={styles.payTotalValue}>{booking.price}</CustomText>
+          <View style={[styles.payRow, styles.totalBox]}>
+            <CustomText style={styles.totalLabel}>{tx('Total Expected')}</CustomText>
+            <CustomText style={styles.totalValue}>{booking.price}</CustomText>
           </View>
         </SectionCard>
 
-        {/* ── Contact ── */}
-        <SectionCard title={tx('Farmer Contact')} delay={300}>
-          <InfoRow icon="call-outline" label={tx('Phone')} value="+91 98765 43210" />
+        {/* ── Location ── */}
+        <SectionCard title={tx('Work Location')} delay={300}>
+          <InfoRow icon="map-outline" label={tx('Village / Area')} value={tx(booking.location)} />
           <View style={styles.divider} />
-          <InfoRow icon="location-outline" label={tx('Village')} value={tx(booking.location)} />
+          <View style={styles.mapPlaceholder}>
+             <Ionicons name="map" size={24} color="#15803D" />
+             <CustomText style={styles.mapText}>{tx('Tap to view on map')}</CustomText>
+          </View>
         </SectionCard>
-
-        {/* spacer for fixed CTA */}
-        <View style={{ height: 120 }} />
       </ScrollView>
 
-      {/* ── Fixed Bottom CTA ── */}
-      {status === 'new' && (
-        <Animated.View entering={FadeInDown.delay(360).duration(400)} style={styles.bottomBar}>
-          <TouchableOpacity
-            style={styles.rejectBtn}
-            onPress={handleReject}
-            activeOpacity={0.8}
-          >
-            <CustomText style={styles.rejectText}>{tx('Reject')}</CustomText>
+      {/* ── Fixed Bottom Actions (Themed) ── */}
+      <View style={styles.footerContainer}>
+        {(status === 'new' || status === 'accepted') ? (
+          <View style={styles.bottomBar}>
+            <TouchableOpacity style={styles.rejectBtn} onPress={handleReject}>
+              <CustomText style={styles.rejectText}>{status === 'new' ? tx('Reject') : tx('Cancel')}</CustomText>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.acceptBtn} onPress={status === 'new' ? handleAccept : () => {}} activeOpacity={0.9}>
+              <LinearGradient colors={['#16A34A', '#15803D']} style={styles.btnGradient}>
+                <Ionicons name={status === 'new' ? "checkmark-circle" : "navigate"} size={18} color="#FFF" />
+                <CustomText style={styles.acceptText}>
+                  {status === 'new' ? tx('Accept Booking') : tx('Start Navigation')}
+                </CustomText>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.fullBtn} onPress={() => navigation.goBack()}>
+            <LinearGradient colors={['#16A34A', '#15803D']} style={styles.btnGradient}>
+              <CustomText style={styles.acceptText}>{tx('Back to List')}</CustomText>
+            </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.acceptBtn}
-            onPress={handleAccept}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="checkmark-circle-outline" size={20} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>{tx('Accept Booking')}</CustomText>
-          </TouchableOpacity>
-        </Animated.View>
-      )}
-
-      {status === 'accepted' && (
-        <Animated.View entering={FadeInDown.delay(360).duration(400)} style={styles.bottomBar}>
-          <TouchableOpacity
-            style={styles.rejectBtn}
-            onPress={handleReject}
-            activeOpacity={0.8}
-          >
-            <CustomText style={styles.rejectText}>{tx('Cancel Job')}</CustomText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.acceptBtn}
-            onPress={() => {/* TODO: navigate to map / start job */}}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="navigate-outline" size={20} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>{tx('Start Navigation')}</CustomText>
-          </TouchableOpacity>
-        </Animated.View>
-      )}
-
-      {(status === 'completed' || status === 'ongoing') && (
-        <Animated.View entering={FadeInDown.delay(360).duration(400)} style={styles.bottomBarSingle}>
-          <TouchableOpacity
-            style={styles.acceptBtnFull}
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.8}
-          >
-            <CustomText style={styles.acceptText}>{tx('Back to Bookings')}</CustomText>
-          </TouchableOpacity>
-        </Animated.View>
-      )}
+        )}
+      </View>
     </View>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: color.SURFACE,
+    backgroundColor: '#F4FAF2',
   },
-
-  // ── Scroll ──
-  scrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    gap: 14,
-    paddingBottom: 16,
-  },
-
-  // ── Hero Card ──
-  heroCard: {
-    backgroundColor: color.WHITE,
-    borderRadius: 18,
-    padding: 16,
+   headerContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    backgroundColor: '#F4FAF2',
+    // Optional: add a very subtle shadow or bottom border
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)', 
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: color.BORDER_LIGHT,
+    borderColor: '#E8F5E9',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
     elevation: 2,
-    gap: 12,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#102A18',
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 10, // Reduced since we don't need to overlap anymore
+    gap: 15,
+  },
+  heroCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 24,
+    padding: 16,
+    marginTop: 5, // Changed from negative to positive for a clean look
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#E8F5E9',
+  },
+  slimHero: {
+    paddingBottom: 40,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    gap: 15,
+  },
+  // Overlapping Hero Card
+  heroCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 24,
+    padding: 16,
+    marginTop: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#E8F5E9',
   },
   heroLeft: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: 12,
     flex: 1,
   },
   heroAvatar: {
-    width: 68,
-    height: 68,
+    width: 56,
+    height: 56,
     borderRadius: 16,
-    backgroundColor: color.AVATAR_BG,
+    backgroundColor: '#F1F5F9',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
   },
   heroInfo: {
     flex: 1,
-    gap: 4,
-    paddingTop: 2,
   },
   heroName: {
-    ...globalStyles.f14Bold,
-    color: color.TEXT_MAIN,
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#102A18',
+  },
+  idRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   heroId: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_MUTED,
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#647A69',
   },
   heroPriceBox: {
     alignItems: 'flex-end',
-    gap: 2,
+    justifyContent: 'center',
   },
   heroPriceLabel: {
-    ...globalStyles.f10Regular,
-    color: color.TEXT_MUTED,
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#94A3B8',
+    textTransform: 'uppercase',
   },
   heroPrice: {
-    ...globalStyles.f14Bold,
-    color: color.YELLOW_TEXT,
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#D97706',
   },
-
-  // ── Status Badge ──
+  // Status Badge
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 30,
-    marginTop: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
   },
   statusText: {
-    ...globalStyles.f10Bold,
+    fontSize: 10,
+    fontWeight: '900',
   },
-
-  // ── Section Card ──
+  // Section Cards
   sectionCard: {
-    backgroundColor: color.WHITE,
-    borderRadius: 18,
-    padding: 16,
+    backgroundColor: '#FFF',
+    borderRadius: 24,
+    padding: 18,
     borderWidth: 1,
-    borderColor: color.BORDER_LIGHT,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-    gap: 12,
+    borderColor: '#E8F5E9',
+    shadowColor: '#08341E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
   sectionTitle: {
-    ...globalStyles.f14Bold,
-    color: color.TEXT_MAIN,
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#12351F',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 12,
   },
-  sectionBody: {
-    gap: 0,
-  },
-
-  // ── Info Row ──
+  // Info Row
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingVertical: 8,
+    gap: 14,
+    paddingVertical: 10,
   },
   infoIconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: color.GREEN_BG,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#F0FDF4',
     justifyContent: 'center',
     alignItems: 'center',
   },
   infoText: {
     flex: 1,
-    gap: 2,
   },
   infoLabel: {
-    ...globalStyles.f10Regular,
-    color: color.TEXT_MUTED,
-    letterSpacing: 0.3,
+    fontSize: 11,
+    color: '#647A69',
+    fontWeight: '600',
   },
   infoValue: {
-    ...globalStyles.f12Bold,
-    color: color.TEXT_MAIN,
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#102A18',
+    marginTop: 1,
   },
   infoValueAccent: {
-    color: color.GREEN,
-    ...globalStyles.f14Bold,
+    color: '#16A34A',
   },
-
   divider: {
     height: 1,
-    backgroundColor: color.BORDER_LIGHT,
-    marginLeft: 48,
+    backgroundColor: '#F1F5F2',
+    marginLeft: 54,
   },
-
-  // ── Description ──
+  // Description
   descriptionBox: {
-    backgroundColor: color.SURFACE_LOW,
-    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 16,
     padding: 14,
   },
   descriptionText: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_SUB,
+    fontSize: 13,
+    color: '#475569',
     lineHeight: 20,
+    fontWeight: '500',
   },
-
-  // ── Payment ──
+  // Payment Summary
   payRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  payRowTotal: {
-    backgroundColor: color.GREEN_BG,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    marginTop: 2,
+    paddingVertical: 10,
   },
   payLabel: {
-    ...globalStyles.f12Regular,
-    color: color.TEXT_SUB,
+    fontSize: 14,
+    color: '#647A69',
+    fontWeight: '600',
   },
   payValue: {
-    ...globalStyles.f12Bold,
-    color: color.TEXT_MAIN,
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#102A18',
   },
-  payTotalLabel: {
-    ...globalStyles.f14Bold,
-    color: color.GREEN,
+  totalBox: {
+    backgroundColor: '#F0FDF4',
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    marginTop: 5,
   },
-  payTotalValue: {
-    ...globalStyles.f16Bold,
-    color: color.GREEN,
+  totalLabel: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#15803D',
   },
-
-  // ── Bottom Bar ──
-  bottomBar: {
+  totalValue: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#15803D',
+  },
+  // Map Placeholder
+  mapPlaceholder: {
+    height: 60,
+    backgroundColor: '#F0FDF4',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#DCEBDD',
+    borderStyle: 'dashed',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginTop: 10,
+  },
+  mapText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#15803D',
+  },
+  // Footer / CTA
+  footerContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: '#FFF',
+    paddingHorizontal: 20,
+    paddingTop: 15,
+    paddingBottom: 30,
+    borderTopWidth: 1,
+    borderTopColor: '#E8F5E9',
+  },
+  bottomBar: {
     flexDirection: 'row',
     gap: 12,
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 28,
-    backgroundColor: color.SURFACE,
-    borderTopWidth: 1,
-    borderTopColor: color.BORDER_LIGHT,
-  },
-  bottomBarSingle: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 28,
-    backgroundColor: color.SURFACE,
-    borderTopWidth: 1,
-    borderTopColor: color.BORDER_LIGHT,
   },
   acceptBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: color.GREEN,
-    borderRadius: 99,
-    paddingVertical: 15,
+    flex: 1.2,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
-  acceptBtnFull: {
+  btnGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: color.GREEN,
-    borderRadius: 99,
-    paddingVertical: 15,
+    paddingVertical: 16,
   },
   acceptText: {
-    ...globalStyles.f14Bold,
-    color: color.WHITE,
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#FFF',
   },
   rejectBtn: {
-    flex: 0.45,
+    flex: 0.8,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 16,
     borderWidth: 2,
-    borderColor: color.RED_REJECT,
-    borderRadius: 99,
-    paddingVertical: 15,
+    borderColor: '#FEE2E2',
   },
   rejectText: {
-    ...globalStyles.f14Bold,
-    color: color.RED_REJECT,
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#E11D48',
   },
+  fullBtn: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  }
 });

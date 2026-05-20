@@ -439,10 +439,27 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
 
+
           <View style={styles.sectionHeader}>
             <View>
               <Text style={styles.sectionTitle}>{tx("Nearby job alerts")}</Text>
               <Text style={styles.sectionSubtitle}>{tx("Accept quickly before the slot closes")}</Text>
+            </View>
+            <View style={styles.livePill}>
+              <View style={styles.liveDot} />
+              <Text style={styles.liveText}>{tx("Live")}</Text>
+            </View>
+          </View>
+
+          {jobs.map((job) => (
+            <JobCard key={job.id} job={job} navigation={navigation} tx={tx} />
+          ))}
+
+          {/* Running Bookings */}
+          <View style={styles.sectionHeader}>
+            <View>
+              <Text style={styles.sectionTitle}>{tx("Running Bookings")}</Text>
+              <Text style={styles.sectionSubtitle}>{tx("Manage your active bookings")}</Text>
             </View>
             <View style={styles.livePill}>
               <View style={styles.liveDot} />
