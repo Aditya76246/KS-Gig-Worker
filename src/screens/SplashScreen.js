@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 
     // Bottom Section
     bottomContainer: {
-        // backgroundColor: '#ffffffd2',
+        backgroundColor: 'rgba(255,255,255,0.50)',
         paddingHorizontal: 40,
         paddingVertical: 30,
         // borderTopLeftRadius: 20,

@@ -9,74 +9,89 @@ import {
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "../localization/i18n";
 
 const documents = [
-  { title: "Aadhaar Card", status: "Uploaded", detail: "XXXX XXXX 4821" },
-  { title: "Bank Passbook", status: "Uploaded", detail: "SBI ending 9012" },
-  { title: "Profile Photo", status: "Uploaded", detail: "Worker ID photo" },
+  { id: 1, title: "Aadhaar Card", status: "Verified", detail: "XXXX XXXX 4821", icon: "id-card-outline" },
+  { id: 2, title: "Bank Passbook", status: "Verified", detail: "SBI ending 9012", icon: "business-outline" },
+  { id: 3, title: "Profile Photo", status: "Verified", detail: "Worker ID photo", icon: "camera-outline" },
 ];
 
-const skills = [
-  "Sowing",
-  "Transplantation",
-  "Weeding",
-  "Harvesting",
-  "Sorting",
-  "Loading",
-];
+const skills = ["Sowing", "Transplantation", "Weeding", "Harvesting", "Sorting", "Loading"];
 
 const KycSetupScreen = ({ navigation }) => {
   const { tx } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [profileType, setProfileType] = useState("Individual");
   const [affiliation, setAffiliation] = useState("Under FPO");
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#166534" />
-      <LinearGradient colors={["#0F3D22", "#166534"]} style={styles.hero}>
-        <View style={styles.logoRow}>
-          <Image
-            source={require("../../assets/images/logo/iconpngplain.png")}
-            style={styles.logoIcon}
-            resizeMode="contain"
-          />
-          <View>
-            <Text style={styles.brand}>KisanSahakar</Text>
-            <Text style={styles.brandSub}>{tx("KYC Setup")}</Text>
-          </View>
-        </View>
+      <StatusBar barStyle="light-content" backgroundColor="#082F1B" />
 
-        <View style={styles.pendingBadge}>
-          <Text style={styles.pendingText}>{tx("Verification pending")}</Text>
+      {/* --- SLIM HEADER --- */}
+      <LinearGradient
+        colors={["#082F1B", "#116834"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[styles.slimHero, { paddingTop: insets.top + 12 }]}
+      >
+        <View style={styles.headerTopRow}>
+          <View style={styles.brandGroup}>
+            <Image
+              source={require("../../assets/images/logo/iconpngplain.png")}
+              style={styles.logoSmall}
+              resizeMode="contain"
+            />
+            <View>
+              <Text style={styles.brandTitle}>KisanSahakar</Text>
+              <Text style={styles.brandSubTitle}>{tx("KYC Setup")}</Text>
+            </View>
+          </View>
+
+          {/* Verification Badge moved to top right */}
+          <View style={styles.statusBadge}>
+            <View style={styles.pulseDot} />
+            <Text style={styles.statusBadgeText}>{tx("In Progress")}</Text>
+          </View>
         </View>
       </LinearGradient>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <View style={styles.greetingSection}>
-          <Text style={styles.greeting}>{tx("Welcome, {{name}}", { name: "Aditya soni" })}</Text>
-          <Text style={styles.role}>{tx("Complete your KYC to start accepting farm work")}</Text>
+      <ScrollView 
+        showsVerticalScrollIndicator={false} 
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 30 }]}
+      >
+        {/* --- USER WELCOME & PROGRESS SECTION (NOW OUTSIDE HEADER) --- */}
+        <View style={styles.userSection}>
+          <View style={styles.welcomeInfo}>
+            <Text style={styles.welcomeText}>{tx("Welcome, Aditya Soni")}</Text>
+            <Text style={styles.welcomeSub}>{tx("75% of your profile is complete")}</Text>
+          </View>
+          
+          <View style={styles.progressContainer}>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: '75%' }]} />
+            </View>
+            <Text style={styles.progressPercent}>75%</Text>
+          </View>
         </View>
 
-        <View style={styles.statusCard}>
-          <View>
-            <Text style={styles.statusLabel}>{tx("Verification status")}</Text>
-            <Text style={styles.statusValue}>{tx("In Progress")}</Text>
-          </View>
-          <View style={styles.progressBadge}>
-            <Text style={styles.progressText}>75%</Text>
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>{tx("Profile type")}</Text>
-        <View style={styles.segment}>
+        {/* --- SELECTION SECTION --- */}
+        <Text style={styles.sectionTitle}>{tx("Work Profile Type")}</Text>
+        <View style={styles.segmentContainer}>
           {["Individual", "Group Leader"].map((item) => (
             <TouchableOpacity
               key={item}
-              activeOpacity={0.85}
-              style={[styles.segmentButton, profileType === item && styles.segmentButtonActive]}
+              style={[styles.segmentBtn, profileType === item && styles.segmentBtnActive]}
               onPress={() => setProfileType(item)}
             >
+              <MaterialCommunityIcons 
+                name={item === "Individual" ? "account" : "account-group"} 
+                size={18} 
+                color={profileType === item ? "#FFF" : "#446451"} 
+              />
               <Text style={[styles.segmentText, profileType === item && styles.segmentTextActive]}>
                 {tx(item)}
               </Text>
@@ -84,40 +99,35 @@ const KycSetupScreen = ({ navigation }) => {
           ))}
         </View>
 
-        <Text style={styles.sectionTitle}>{tx("Affiliation")}</Text>
-        <View style={styles.segment}>
-          {["Individual", "Under FPO"].map((item) => (
-            <TouchableOpacity
-              key={item}
-              activeOpacity={0.85}
-              style={[styles.segmentButton, affiliation === item && styles.segmentButtonActive]}
-              onPress={() => setAffiliation(item)}
-            >
-              <Text style={[styles.segmentText, affiliation === item && styles.segmentTextActive]}>
-                {tx(item)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
+        <Text style={styles.sectionTitle}>{tx("FPO Affiliation")}</Text>
         <View style={styles.fpoCard}>
-          <Text style={styles.fpoLabel}>{tx("FPO ID")}</Text>
-          <Text style={styles.fpoValue}>FPO-KS-2048</Text>
-          <Text style={styles.fpoCopy}>{tx("Kisan Green Producer Company, Vijayapura cluster")}</Text>
+          <View style={styles.fpoMain}>
+            <Ionicons name="business" size={24} color="#16A34A" />
+            <View style={styles.fpoTextContent}>
+              <Text style={styles.fpoId}>ID: FPO-KS-2048</Text>
+              <Text style={styles.fpoName}>Kisan Green Producer Company</Text>
+            </View>
+          </View>
         </View>
 
-        <Text style={styles.sectionTitle}>{tx("KYC documents")}</Text>
+        {/* --- DOCUMENTS SECTION --- */}
+        <Text style={styles.sectionTitle}>{tx("KYC Documents")}</Text>
         {documents.map((doc) => (
-          <View key={doc.title} style={styles.docCard}>
-            <View>
+          <View key={doc.id} style={styles.docCard}>
+            <Ionicons name={doc.icon} size={20} color="#15803D" style={styles.docIcon} />
+            <View style={styles.docInfo}>
               <Text style={styles.docTitle}>{tx(doc.title)}</Text>
-              <Text style={styles.docDetail}>{tx(doc.detail)}</Text>
+              <Text style={styles.docDetail}>{doc.detail}</Text>
             </View>
-            <Text style={styles.docStatus}>{tx(doc.status)}</Text>
+            <View style={styles.verifiedTag}>
+              <Ionicons name="checkmark-done" size={14} color="#15803D" />
+              <Text style={styles.verifiedText}>{tx("Verified")}</Text>
+            </View>
           </View>
         ))}
 
-        <Text style={styles.sectionTitle}>{tx("Skills selected")}</Text>
+        {/* --- SKILLS SECTION --- */}
+        <Text style={styles.sectionTitle}>{tx("Your Skills")}</Text>
         <View style={styles.skillGrid}>
           {skills.map((skill) => (
             <View key={skill} style={styles.skillPill}>
@@ -126,22 +136,17 @@ const KycSetupScreen = ({ navigation }) => {
           ))}
         </View>
 
+        {/* --- ACTION BUTTON --- */}
         <TouchableOpacity
-          activeOpacity={0.88}
-          style={styles.button}
-          onPress={() =>
-            navigation.getParent()?.reset({
-              index: 0,
-              routes: [
-                {
-                  name: 'Main',
-                  params: { screen: 'HomeTab' },
-                },
-              ],
-            })
-          }
+          activeOpacity={0.9}
+          style={styles.mainButton}
+          onPress={() => navigation.getParent()?.reset({
+            index: 0,
+            routes: [{ name: 'Main', params: { screen: 'HomeTab' } }],
+          })}
         >
           <Text style={styles.buttonText}>{tx("Continue to Dashboard")}</Text>
+          <Ionicons name="chevron-forward" size={18} color="#FFF" />
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -151,225 +156,241 @@ const KycSetupScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5FBF6",
+    backgroundColor: "#F4FAF2",
   },
-  hero: {
-    paddingTop: 58,
-    paddingHorizontal: 22,
-    paddingBottom: 24,
-    borderBottomRightRadius: 28,
-    borderBottomLeftRadius: 28,
+  slimHero: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
-  content: {
-    paddingHorizontal: 22,
-    paddingTop: 24,
-    paddingBottom: 32,
+  headerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  logoRow: {
+  brandGroup: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    marginBottom: 16,
   },
-  logoIcon: {
-    width: 54,
-    height: 54,
+  logoSmall: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
-  brand: {
+  brandTitle: {
     color: "#FFFFFF",
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "900",
   },
-  brandSub: {
-    color: "#CDEBD2",
-    fontSize: 13,
+  brandSubTitle: {
+    color: "#BBF7D0",
+    fontSize: 11,
     fontWeight: "700",
-    marginTop: 2,
   },
-  pendingBadge: {
-    alignSelf: "flex-start",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 999,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    marginBottom: 0,
-  },
-  pendingText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "900",
-  },
-  greetingSection: {
-    marginBottom: 16,
-  },
-  greeting: {
-    color: "#102A18",
-    fontSize: 28,
-    fontWeight: "900",
-    marginBottom: 4,
-  },
-  role: {
-    color: "#607769",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  statusCard: {
-    marginBottom: 24,
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: "#E7F8EC",
-    borderWidth: 1,
-    borderColor: "#D1EDD9",
+  statusBadge: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-  },
-  statusLabel: {
-    color: "#166534",
-    fontSize: 12,
-    fontWeight: "900",
-    textTransform: "uppercase",
-  },
-  statusValue: {
-    color: "#102A18",
-    fontSize: 16,
-    fontWeight: "900",
-    marginTop: 4,
-  },
-  progressBadge: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 999,
-    backgroundColor: "#16A34A",
-  },
-  progressText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "900",
-  },
-  title: {
-    color: "#102A18",
-    fontSize: 32,
-    lineHeight: 38,
-    fontWeight: "900",
-    marginTop: 26,
-  },
-  subtitle: {
-    color: "#607769",
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 10,
-  },
-  sectionTitle: {
-    color: "#163B22",
-    fontSize: 16,
-    fontWeight: "900",
-    marginTop: 26,
-    marginBottom: 12,
-  },
-  segment: {
-    flexDirection: "row",
-    padding: 5,
-    borderRadius: 18,
-    backgroundColor: "#EAF7EE",
-  },
-  segmentButton: {
-    flex: 1,
-    minHeight: 44,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 14,
-  },
-  segmentButtonActive: {
-    backgroundColor: "#16A34A",
-  },
-  segmentText: {
-    color: "#446451",
-    fontSize: 14,
-    fontWeight: "900",
-  },
-  segmentTextActive: {
-    color: "#FFFFFF",
-  },
-  fpoCard: {
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#DDEFE2",
+    borderColor: "rgba(255,255,255,0.1)",
   },
-  fpoLabel: {
-    color: "#68836F",
-    fontSize: 12,
-    fontWeight: "900",
+  statusBadgeText: {
+    color: "#FFF",
+    fontSize: 10,
+    fontWeight: "800",
   },
-  fpoValue: {
-    color: "#102A18",
+  pulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#FBBF24",
+    marginRight: 6,
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  userSection: {
+    backgroundColor: "#FFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#E8F5E9",
+    elevation: 2,
+  },
+  welcomeText: {
     fontSize: 20,
     fontWeight: "900",
-    marginTop: 4,
+    color: "#102A18",
   },
-  fpoCopy: {
-    color: "#607769",
+  welcomeSub: {
     fontSize: 13,
-    marginTop: 4,
+    color: "#647A69",
+    fontWeight: "600",
+    marginTop: 2,
+  },
+  progressContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 15,
+  },
+  progressTrack: {
+    flex: 1,
+    height: 6,
+    backgroundColor: "#F1F5F2",
+    borderRadius: 3,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#16A34A",
+  },
+  progressPercent: {
+    fontSize: 12,
+    fontWeight: "900",
+    color: "#15803D",
+  },
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: "900",
+    color: "#12351F",
+    marginTop: 20,
+    marginBottom: 10,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  segmentContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  segmentBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#FFF",
+    paddingVertical: 12,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#DCEBDD",
+  },
+  segmentBtnActive: {
+    backgroundColor: "#116834",
+    borderColor: "#116834",
+  },
+  segmentText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#446451",
+  },
+  segmentTextActive: {
+    color: "#FFF",
+  },
+  fpoCard: {
+    backgroundColor: "#FFF",
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#DCEBDD",
+  },
+  fpoMain: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  fpoTextContent: {
+    flex: 1,
+  },
+  fpoId: {
+    fontSize: 11,
+    fontWeight: "900",
+    color: "#16A34A",
+  },
+  fpoName: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#102A18",
   },
   docCard: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
-    borderRadius: 18,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFF",
+    padding: 12,
+    borderRadius: 15,
+    marginBottom: 8,
     borderWidth: 1,
-    borderColor: "#E1F0E6",
-    marginBottom: 10,
+    borderColor: "#DCEBDD",
+  },
+  docIcon: {
+    width: 30,
+  },
+  docInfo: {
+    flex: 1,
   },
   docTitle: {
-    color: "#14351F",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "900",
+    color: "#12351F",
   },
   docDetail: {
-    color: "#6A8170",
-    fontSize: 13,
-    marginTop: 4,
-  },
-  docStatus: {
-    color: "#15803D",
     fontSize: 12,
+    color: "#647A69",
+  },
+  verifiedTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#E9FBEF",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  verifiedText: {
+    fontSize: 10,
     fontWeight: "900",
+    color: "#15803D",
   },
   skillGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
   },
   skillPill: {
-    paddingVertical: 9,
-    paddingHorizontal: 13,
-    borderRadius: 999,
-    backgroundColor: "#E9FBEF",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+    backgroundColor: "#FFF",
     borderWidth: 1,
-    borderColor: "#CBEBD3",
+    borderColor: "#DCEBDD",
   },
   skillText: {
-    color: "#166534",
-    fontSize: 13,
-    fontWeight: "900",
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#116834",
   },
-  button: {
-    minHeight: 58,
-    borderRadius: 18,
+  mainButton: {
+    marginTop: 30,
     backgroundColor: "#16A34A",
+    borderRadius: 18,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 30,
+    gap: 10,
+    paddingVertical: 16,
+    elevation: 3,
   },
   buttonText: {
-    color: "#FFFFFF",
-    fontSize: 17,
+    color: "#FFF",
+    fontSize: 16,
     fontWeight: "900",
   },
 });
