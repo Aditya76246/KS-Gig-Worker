@@ -14,6 +14,7 @@ import CustomText from '../components/CustomText';
 import InnerScreenHeader from '../components/InnerScreenHeader';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
+import { useTranslation } from '../localization/i18n';
 
 // ─── Info Row helper ──────────────────────────────────────────────────────────
 
@@ -49,12 +50,12 @@ function SectionCard({ title, children, delay = 0 }) {
 
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 
-function StatusBadge({ status }) {
+function StatusBadge({ status, tx }) {
   const map = {
-    new:       { label: 'New Request', bg: color.GREEN_BG,   text: color.GREEN,      icon: 'radio-button-on-outline' },
-    accepted:  { label: 'Accepted',    bg: color.YELLOW_BG,  text: color.YELLOW_TEXT, icon: 'checkmark-circle-outline' },
-    ongoing:   { label: 'Ongoing',     bg: '#fce4ec',        text: '#923357',        icon: 'time-outline' },
-    completed: { label: 'Completed',   bg: color.GREEN_BG,   text: color.GREEN,      icon: 'checkmark-done-circle-outline' },
+    new:       { label: tx('New Request'), bg: color.GREEN_BG,   text: color.GREEN,      icon: 'radio-button-on-outline' },
+    accepted:  { label: tx('Accepted'),    bg: color.YELLOW_BG,  text: color.YELLOW_TEXT, icon: 'checkmark-circle-outline' },
+    ongoing:   { label: tx('Ongoing'),     bg: '#fce4ec',        text: '#923357',        icon: 'time-outline' },
+    completed: { label: tx('Completed'),   bg: color.GREEN_BG,   text: color.GREEN,      icon: 'checkmark-done-circle-outline' },
   };
   const s = map[status] || map.new;
   return (
@@ -70,12 +71,13 @@ function StatusBadge({ status }) {
 export default function BookingDetailScreen({ navigation, route }) {
   const { booking } = route.params;
   const [status, setStatus] = useState(booking.status);
+  const { tx } = useTranslation();
 
   const handleAccept = () => {
-    Alert.alert('Accept Booking', `Accept job from ${booking.farmerName}?`, [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(tx('Accept Booking Title'), tx('Accept job from {{name}}?', { name: booking.farmerName }), [
+      { text: tx('Cancel'), style: 'cancel' },
       {
-        text: 'Accept',
+        text: tx('Accept'),
         onPress: () => {
           setStatus('accepted');
           // TODO: API call
@@ -85,10 +87,10 @@ export default function BookingDetailScreen({ navigation, route }) {
   };
 
   const handleReject = () => {
-    Alert.alert('Reject Booking', 'Are you sure you want to reject this booking?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(tx('Reject Booking'), tx('Are you sure you want to reject this booking?'), [
+      { text: tx('Cancel'), style: 'cancel' },
       {
-        text: 'Reject',
+        text: tx('Reject'),
         style: 'destructive',
         onPress: () => {
           navigation.goBack();
@@ -103,7 +105,7 @@ export default function BookingDetailScreen({ navigation, route }) {
       <StatusBar style="dark" />
 
       {/* ── Header ── */}
-      <InnerScreenHeader navigation={navigation} title="Booking Details" />
+      <InnerScreenHeader navigation={navigation} title={tx('Booking Details')} />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -119,82 +121,82 @@ export default function BookingDetailScreen({ navigation, route }) {
             <View style={styles.heroInfo}>
               <CustomText style={styles.heroName}>{booking.farmerName}</CustomText>
               <CustomText style={styles.heroId}>ID: #{booking.id}</CustomText>
-              <StatusBadge status={status} />
+              <StatusBadge status={status} tx={tx} />
             </View>
           </View>
           <View style={styles.heroPriceBox}>
-            <CustomText style={styles.heroPriceLabel}>Estimate</CustomText>
+            <CustomText style={styles.heroPriceLabel}>{tx('Estimate')}</CustomText>
             <CustomText style={styles.heroPrice}>{booking.price}</CustomText>
           </View>
         </Animated.View>
 
         {/* ── Job Details ── */}
-        <SectionCard title="Job Details" delay={120}>
+        <SectionCard title={tx('Job Details')} delay={120}>
           <InfoRow
             icon="construct-outline"
-            label="Service Type"
-            value={booking.service}
+            label={tx('Service Type')}
+            value={tx(booking.service)}
           />
           <View style={styles.divider} />
           <InfoRow
             icon="resize-outline"
-            label="Area"
+            label={tx('Area')}
             value={booking.area}
             accent
           />
           <View style={styles.divider} />
           <InfoRow
             icon="calendar-outline"
-            label="Scheduled Date & Time"
-            value={booking.date}
+            label={tx('Scheduled Date & Time')}
+            value={tx(booking.date)}
           />
           <View style={styles.divider} />
           <InfoRow
             icon="map-outline"
-            label="Location"
-            value={booking.location}
+            label={tx('Location')}
+            value={tx(booking.location)}
           />
           <View style={styles.divider} />
           <InfoRow
             icon="location-outline"
-            label="Distance from You"
-            value={booking.distance}
+            label={tx('Distance from You')}
+            value={tx(booking.distance)}
             accent
           />
         </SectionCard>
 
         {/* ── Description ── */}
-        <SectionCard title="Job Description" delay={180}>
+        <SectionCard title={tx('Job Description')} delay={180}>
           <View style={styles.descriptionBox}>
             <CustomText style={styles.descriptionText}>
-              {booking.description}
+              {tx(booking.description)}
             </CustomText>
           </View>
         </SectionCard>
 
         {/* ── Payment Breakdown ── */}
-        <SectionCard title="Payment Breakdown" delay={240}>
+        <SectionCard title={tx('Payment Breakdown')} delay={240}>
           <View style={styles.payRow}>
-            <CustomText style={styles.payLabel}>Base Rate</CustomText>
+            <CustomText style={styles.payLabel}>{tx('Base Rate')}</CustomText>
             <CustomText style={styles.payValue}>{booking.price}</CustomText>
           </View>
           <View style={styles.divider} />
           <View style={styles.payRow}>
-            <CustomText style={styles.payLabel}>Platform Fee</CustomText>
+            <CustomText style={styles.payLabel}>{tx('Platform Fee')}</CustomText>
             <CustomText style={[styles.payValue, { color: color.TEXT_MUTED }]}>—</CustomText>
           </View>
           <View style={styles.divider} />
           <View style={[styles.payRow, styles.payRowTotal]}>
-            <CustomText style={styles.payTotalLabel}>Total Estimate</CustomText>
+            <CustomText style={styles.payTotalLabel}>{tx('Total Estimate')}</CustomText>
             <CustomText style={styles.payTotalValue}>{booking.price}</CustomText>
           </View>
         </SectionCard>
 
         {/* ── Contact ── */}
-        <SectionCard title="Farmer Contact" delay={300}>
-          <InfoRow icon="call-outline" label="Phone" value="+91 98765 43210" />
+        <SectionCard title={tx('Farmer Contact')} delay={300}>
+          <InfoRow icon="call-outline" label={tx('Phone')} value="+91 98765 43210" />
           <View style={styles.divider} />
-          <InfoRow icon="location-outline" label="Village" value={booking.location} />
+          <InfoRow icon="location-outline" label={tx('Village')} value={tx(booking.location)} />
         </SectionCard>
 
         {/* spacer for fixed CTA */}
@@ -209,7 +211,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             onPress={handleReject}
             activeOpacity={0.8}
           >
-            <CustomText style={styles.rejectText}>Reject</CustomText>
+            <CustomText style={styles.rejectText}>{tx('Reject')}</CustomText>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.acceptBtn}
@@ -217,7 +219,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             activeOpacity={0.8}
           >
             <Ionicons name="checkmark-circle-outline" size={20} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>Accept Booking</CustomText>
+            <CustomText style={styles.acceptText}>{tx('Accept Booking')}</CustomText>
           </TouchableOpacity>
         </Animated.View>
       )}
@@ -229,7 +231,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             onPress={handleReject}
             activeOpacity={0.8}
           >
-            <CustomText style={styles.rejectText}>Cancel Job</CustomText>
+            <CustomText style={styles.rejectText}>{tx('Cancel Job')}</CustomText>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.acceptBtn}
@@ -237,7 +239,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             activeOpacity={0.8}
           >
             <Ionicons name="navigate-outline" size={20} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>Start Navigation</CustomText>
+            <CustomText style={styles.acceptText}>{tx('Start Navigation')}</CustomText>
           </TouchableOpacity>
         </Animated.View>
       )}
@@ -249,7 +251,7 @@ export default function BookingDetailScreen({ navigation, route }) {
             onPress={() => navigation.goBack()}
             activeOpacity={0.8}
           >
-            <CustomText style={styles.acceptText}>Back to Bookings</CustomText>
+            <CustomText style={styles.acceptText}>{tx('Back to Bookings')}</CustomText>
           </TouchableOpacity>
         </Animated.View>
       )}

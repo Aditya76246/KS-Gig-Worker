@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTranslation } from "../localization/i18n";
 
 const fallbackJob = {
   id: "JOB-1842",
@@ -35,6 +36,7 @@ const JobDetailsScreen = ({ navigation, route }) => {
   const job = route.params?.job || fallbackJob;
   const [accepted, setAccepted] = useState(false);
   const [punchedIn, setPunchedIn] = useState(false);
+  const { tx } = useTranslation();
 
   return (
     <View style={styles.screen}>
@@ -47,18 +49,18 @@ const JobDetailsScreen = ({ navigation, route }) => {
             style={styles.imageOverlay}
           >
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backText}>Back</Text>
+              <Text style={styles.backText}>{tx("Back")}</Text>
             </TouchableOpacity>
             <View>
-              <Text style={styles.crop}>{job.crop}</Text>
-              <Text style={styles.title}>{job.type}</Text>
+              <Text style={styles.crop}>{tx(job.crop)}</Text>
+              <Text style={styles.title}>{tx(job.type)}</Text>
             </View>
           </LinearGradient>
         </View>
 
         <View style={styles.payCard}>
           <View>
-            <Text style={styles.payLabel}>Worker pay</Text>
+            <Text style={styles.payLabel}>{tx("Worker pay")}</Text>
             <Text style={styles.payValue}>{job.pay}</Text>
           </View>
           <View style={styles.distanceBadge}>
@@ -67,50 +69,50 @@ const JobDetailsScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.infoGrid}>
-          <Info label="Farmer" value={job.farmer} />
-          <Info label="Village" value={job.village} />
-          <Info label="Start" value={job.time} />
-          <Info label="Team" value={job.workers} />
+          <Info label={tx("Farmer")} value={job.farmer} />
+          <Info label={tx("Village")} value={tx(job.village)} />
+          <Info label={tx("Start")} value={tx(job.time)} />
+          <Info label={tx("Team")} value={tx(job.workers)} />
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Job lifecycle</Text>
+          <Text style={styles.cardTitle}>{tx("Job lifecycle")}</Text>
           {steps.map((step, index) => (
             <View key={step.title} style={styles.stepRow}>
               <View style={styles.stepDot}>
                 <Text style={styles.stepDotText}>{index + 1}</Text>
               </View>
               <View style={styles.stepContent}>
-                <Text style={styles.stepTitle}>{step.title}</Text>
-                <Text style={styles.stepDetail}>{step.detail}</Text>
+                <Text style={styles.stepTitle}>{tx(step.title)}</Text>
+                <Text style={styles.stepDetail}>{tx(step.detail)}</Text>
               </View>
             </View>
           ))}
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Pricing and settlement</Text>
+          <Text style={styles.cardTitle}>{tx("Pricing and settlement")}</Text>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Base wage</Text>
+            <Text style={styles.priceLabel}>{tx("Base wage")}</Text>
             <Text style={styles.priceValue}>{job.pay}</Text>
           </View>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Platform/FPO commission</Text>
-            <Text style={styles.priceValue}>5 percent</Text>
+            <Text style={styles.priceLabel}>{tx("Platform/FPO commission")}</Text>
+            <Text style={styles.priceValue}>{tx("5 percent")}</Text>
           </View>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Payment mode</Text>
-            <Text style={styles.priceValue}>Cash or online</Text>
+            <Text style={styles.priceLabel}>{tx("Payment mode")}</Text>
+            <Text style={styles.priceValue}>{tx("Cash or online")}</Text>
           </View>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Completion proof</Text>
+          <Text style={styles.cardTitle}>{tx("Completion proof")}</Text>
           <Text style={styles.cardCopy}>
-            Upload one farm photo after work completion. This static demo shows the flow only.
+            {tx("Upload one farm photo after work completion. This static demo shows the flow only.")}
           </Text>
           <TouchableOpacity activeOpacity={0.85} style={styles.outlineButton}>
-            <Text style={styles.outlineButtonText}>Add Proof Photo</Text>
+            <Text style={styles.outlineButtonText}>{tx("Add Proof Photo")}</Text>
           </TouchableOpacity>
         </View>
 
@@ -120,14 +122,14 @@ const JobDetailsScreen = ({ navigation, route }) => {
             style={[styles.primaryButton, accepted && styles.primaryButtonMuted]}
             onPress={() => setAccepted(true)}
           >
-            <Text style={styles.primaryButtonText}>{accepted ? "Job Accepted" : "Accept Job"}</Text>
+            <Text style={styles.primaryButtonText}>{accepted ? tx("Job Accepted") : tx("Accept Job")}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.86}
             style={styles.secondaryButton}
             onPress={() => setPunchedIn((value) => !value)}
           >
-            <Text style={styles.secondaryButtonText}>{punchedIn ? "Punch Out" : "GPS Punch In"}</Text>
+            <Text style={styles.secondaryButtonText}>{punchedIn ? tx("Punch Out") : tx("GPS Punch In")}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

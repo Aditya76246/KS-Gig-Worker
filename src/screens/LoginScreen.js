@@ -26,9 +26,11 @@ import SplashScreenBg from '../../assets/images/loginBg.png';
 import globalStyles from '../styles/globalStyles';
 import CustomText from '../components/CustomText';
 import { color } from '../styles/theme';
+import { useTranslation } from '../localization/i18n';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const { tx } = useTranslation();
   const [showOtp, setShowOtp] = useState(false);
   const [mobile, setMobile] = useState('');
   const [otp, setOtp] = useState('');
@@ -89,7 +91,7 @@ export default function LoginScreen() {
     if (otp.length === 6) {
       navigation.replace('KycSetup');
     } else {
-      alert('Please enter all 6 digits of OTP');
+      alert(tx('Please enter all 6 digits of OTP'));
     }
   };
 
@@ -146,19 +148,19 @@ export default function LoginScreen() {
               style={[styles.bottomContainer, animatedStyle]}
               layout={Layout.springify()}
             >
-              <CustomText style={styles.secTitle}>SECURE LOGIN</CustomText>
+              <CustomText style={styles.secTitle}>{tx('SECURE LOGIN')}</CustomText>
 
-              <CustomText style={styles.title}>Welcome to Kisan Sahakar!</CustomText>
-              <CustomText style={styles.subtitle}>We'll send a one-time code to your phone to access your dashboard </CustomText>
+              <CustomText style={styles.title}>{tx('Welcome to Kisan Sahakar!')}</CustomText>
+              <CustomText style={styles.subtitle}>{tx("We'll send a one-time code to your phone to access your dashboard")}</CustomText>
 
               {/* Mobile */}
-              <CustomText style={styles.label}>Mobile Number</CustomText>
+              <CustomText style={styles.label}>{tx('Mobile Number')}</CustomText>
 
               <View style={styles.inputContainer}>
                 <CustomText style={styles.prefix}>+91</CustomText>
 
                 <TextInput
-                  placeholder="Enter mobile number"
+                  placeholder={tx('Enter mobile number')}
                   style={styles.input}
                   keyboardType="number-pad"
                   value={mobile}
@@ -175,7 +177,7 @@ export default function LoginScreen() {
                   layout={Layout.springify()}
                 >
                   <CustomText style={[styles.label, { marginTop: 16 }]}>
-                    Enter OTP
+                    {tx('Enter OTP')}
                   </CustomText>
 
                   {renderOtpBoxes()}
@@ -183,7 +185,7 @@ export default function LoginScreen() {
                   {/* Resend OTP */}
                   <View style={styles.resendContainer}>
                     <CustomText style={styles.resendText}>
-                      Didn't receive OTP?{' '}
+                      {tx("Didn't receive OTP?")}{' '}
                     </CustomText>
                     <TouchableOpacity
                       onPress={handleResendOtp}
@@ -196,7 +198,7 @@ export default function LoginScreen() {
                           { color: canResend ? color.GREEN : '#ccc' },
                         ]}
                       >
-                        {canResend ? 'Resend' : `Resend in ${timer}s`}
+                        {canResend ? tx('Resend') : tx('Resend in {{seconds}}s', { seconds: timer })}
                       </CustomText>
                     </TouchableOpacity>
                   </View>
@@ -210,7 +212,7 @@ export default function LoginScreen() {
                 onPress={showOtp ? handleVerifyOtp : handleSendOtp}
               >
                 <CustomText style={styles.primaryText}>
-                  {showOtp ? 'Verify OTP' : 'Send OTP'}
+                  {showOtp ? tx('Verify OTP') : tx('Send OTP')}
                 </CustomText>
 
                 <Ionicons

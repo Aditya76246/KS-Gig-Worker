@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTranslation } from "../localization/i18n";
 
 const documents = [
   { title: "Aadhaar Card", status: "Uploaded", detail: "XXXX XXXX 4821" },
@@ -26,6 +27,7 @@ const skills = [
 ];
 
 const KycSetupScreen = ({ navigation }) => {
+  const { tx } = useTranslation();
   const [profileType, setProfileType] = useState("Individual");
   const [affiliation, setAffiliation] = useState("Under FPO");
 
@@ -41,32 +43,32 @@ const KycSetupScreen = ({ navigation }) => {
           />
           <View>
             <Text style={styles.brand}>KisanSahakar</Text>
-            <Text style={styles.brandSub}>KYC Setup</Text>
+            <Text style={styles.brandSub}>{tx("KYC Setup")}</Text>
           </View>
         </View>
 
         <View style={styles.pendingBadge}>
-          <Text style={styles.pendingText}>Verification pending</Text>
+          <Text style={styles.pendingText}>{tx("Verification pending")}</Text>
         </View>
       </LinearGradient>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         <View style={styles.greetingSection}>
-          <Text style={styles.greeting}>Welcome, Aditya soni</Text>
-          <Text style={styles.role}>Complete your KYC to start accepting farm work</Text>
+          <Text style={styles.greeting}>{tx("Welcome, {{name}}", { name: "Aditya soni" })}</Text>
+          <Text style={styles.role}>{tx("Complete your KYC to start accepting farm work")}</Text>
         </View>
 
         <View style={styles.statusCard}>
           <View>
-            <Text style={styles.statusLabel}>Verification status</Text>
-            <Text style={styles.statusValue}>In Progress</Text>
+            <Text style={styles.statusLabel}>{tx("Verification status")}</Text>
+            <Text style={styles.statusValue}>{tx("In Progress")}</Text>
           </View>
           <View style={styles.progressBadge}>
             <Text style={styles.progressText}>75%</Text>
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Profile type</Text>
+        <Text style={styles.sectionTitle}>{tx("Profile type")}</Text>
         <View style={styles.segment}>
           {["Individual", "Group Leader"].map((item) => (
             <TouchableOpacity
@@ -76,13 +78,13 @@ const KycSetupScreen = ({ navigation }) => {
               onPress={() => setProfileType(item)}
             >
               <Text style={[styles.segmentText, profileType === item && styles.segmentTextActive]}>
-                {item}
+                {tx(item)}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.sectionTitle}>Affiliation</Text>
+        <Text style={styles.sectionTitle}>{tx("Affiliation")}</Text>
         <View style={styles.segment}>
           {["Individual", "Under FPO"].map((item) => (
             <TouchableOpacity
@@ -92,34 +94,34 @@ const KycSetupScreen = ({ navigation }) => {
               onPress={() => setAffiliation(item)}
             >
               <Text style={[styles.segmentText, affiliation === item && styles.segmentTextActive]}>
-                {item}
+                {tx(item)}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
         <View style={styles.fpoCard}>
-          <Text style={styles.fpoLabel}>FPO ID</Text>
+          <Text style={styles.fpoLabel}>{tx("FPO ID")}</Text>
           <Text style={styles.fpoValue}>FPO-KS-2048</Text>
-          <Text style={styles.fpoCopy}>Kisan Green Producer Company, Vijayapura cluster</Text>
+          <Text style={styles.fpoCopy}>{tx("Kisan Green Producer Company, Vijayapura cluster")}</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>KYC documents</Text>
+        <Text style={styles.sectionTitle}>{tx("KYC documents")}</Text>
         {documents.map((doc) => (
           <View key={doc.title} style={styles.docCard}>
             <View>
-              <Text style={styles.docTitle}>{doc.title}</Text>
-              <Text style={styles.docDetail}>{doc.detail}</Text>
+              <Text style={styles.docTitle}>{tx(doc.title)}</Text>
+              <Text style={styles.docDetail}>{tx(doc.detail)}</Text>
             </View>
-            <Text style={styles.docStatus}>{doc.status}</Text>
+            <Text style={styles.docStatus}>{tx(doc.status)}</Text>
           </View>
         ))}
 
-        <Text style={styles.sectionTitle}>Skills selected</Text>
+        <Text style={styles.sectionTitle}>{tx("Skills selected")}</Text>
         <View style={styles.skillGrid}>
           {skills.map((skill) => (
             <View key={skill} style={styles.skillPill}>
-              <Text style={styles.skillText}>{skill}</Text>
+              <Text style={styles.skillText}>{tx(skill)}</Text>
             </View>
           ))}
         </View>
@@ -139,7 +141,7 @@ const KycSetupScreen = ({ navigation }) => {
             })
           }
         >
-          <Text style={styles.buttonText}>Continue to Dashboard</Text>
+          <Text style={styles.buttonText}>{tx("Continue to Dashboard")}</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

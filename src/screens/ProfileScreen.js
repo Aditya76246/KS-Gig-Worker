@@ -13,25 +13,27 @@ import CustomText from '../components/CustomText';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
 import useHideTabBarOnScroll from '../hooks/useHideTabBarOnScroll';
+import { useTranslation } from '../localization/i18n';
 
 // ─── Profile completion steps ─────────────────────────────────────────────────
 const COMPLETION_STEPS = [
-  { id: 'basic', label: 'Basic Details', icon: 'person-outline', status: 'done' },
-  { id: 'farm', label: 'Driving Details', icon: 'leaf-outline', status: 'done' },
-  { id: 'bank', label: 'Bank Details', icon: 'business-outline', status: 'partial', progress: '0/2' },
+  { id: 'basic', labelKey: 'profile.steps.basic', icon: 'person-outline', status: 'done' },
+  { id: 'farm', labelKey: 'profile.steps.driving', icon: 'leaf-outline', status: 'done' },
+  { id: 'bank', labelKey: 'profile.steps.bank', icon: 'business-outline', status: 'partial', progress: '0/2' },
 ];
 
 // ─── Menu sections ────────────────────────────────────────────────────────────
 const ACCOUNT_MENU = [
-  { id: 'PersonalInfo', label: 'Personal Information', sub: 'View and update your personal details', icon: 'person-outline' },
-  { id: 'Documents', label: 'My Documents', sub: 'Manage your uploaded documents', icon: 'document-text-outline' },
+  { id: 'PersonalInfo', labelKey: 'profile.menu.personalInfo', subKey: 'profile.menu.personalInfoSub', icon: 'person-outline' },
+  { id: 'Documents', labelKey: 'profile.menu.documents', subKey: 'profile.menu.documentsSub', icon: 'document-text-outline' },
+  { id: 'ChooseLanguage', labelKey: 'profile.menu.language', subKey: 'profile.menu.languageSub', icon: 'globe-outline' },
 ];
 
 const SUPPORT_MENU = [
-  { id: 'help', label: 'Help & Support', sub: 'Get help, chat or call us', icon: 'headset-outline' },
-  { id: 'about', label: 'About Kisan Sahakar', sub: 'Know more about the app', icon: 'information-circle-outline' },
-  { id: 'terms', label: 'Terms & Conditions', sub: 'Read our terms and conditions', icon: 'reader-outline' },
-  { id: 'privacy', label: 'Privacy Policy', sub: 'Read our privacy policy', icon: 'lock-closed-outline' },
+  { id: 'help', labelKey: 'profile.menu.help', subKey: 'profile.menu.helpSub', icon: 'headset-outline' },
+  { id: 'about', labelKey: 'profile.menu.about', subKey: 'profile.menu.aboutSub', icon: 'information-circle-outline' },
+  { id: 'terms', labelKey: 'profile.menu.terms', subKey: 'profile.menu.termsSub', icon: 'reader-outline' },
+  { id: 'privacy', labelKey: 'profile.menu.privacy', subKey: 'profile.menu.privacySub', icon: 'lock-closed-outline' },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -79,9 +81,32 @@ function MenuItem({ item, onPress, isLast }) {
 export default function ProfileScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const { bottomNavHidden, handleScroll } = useHideTabBarOnScroll();
+  const { t } = useTranslation();
   const completionPct = 66;
 
+  const completionSteps = COMPLETION_STEPS.map((step) => ({
+    ...step,
+    label: t(step.labelKey),
+  }));
+
+  const accountMenu = ACCOUNT_MENU.map((item) => ({
+    ...item,
+    label: t(item.labelKey),
+    sub: t(item.subKey),
+  }));
+
+  const supportMenu = SUPPORT_MENU.map((item) => ({
+    ...item,
+    label: t(item.labelKey),
+    sub: t(item.subKey),
+  }));
+
   const handleMenuPress = (id) => {
+    if (id === 'ChooseLanguage') {
+      navigation.navigate(id, { returnToProfile: true });
+      return;
+    }
+
     navigation.navigate(id);
   };
 
@@ -125,7 +150,7 @@ export default function ProfileScreen({ navigation }) {
 
               <View style={styles.roleBadge}>
                 <MaterialCommunityIcons name="calendar-month-outline" size={13} color={color.GREEN} />
-                <CustomText style={styles.roleText}>Individual Farmer</CustomText>
+                <CustomText style={styles.roleText}>{t('profile.role')}</CustomText>
               </View>
 
               <View style={styles.contactRow}>
@@ -149,11 +174,11 @@ export default function ProfileScreen({ navigation }) {
         <Animated.View entering={FadeInDown.delay(120).duration(400)} style={styles.completionCard}>
           <View style={styles.completionHeader}>
             <View style={{ flex: 1 }}>
-              <CustomText style={styles.completionTitle}>Profile Completion</CustomText>
-              <CustomText style={styles.completionSub}>Complete your profile to get better experience</CustomText>
+              <CustomText style={styles.completionTitle}>{t('profile.profileCompletion')}</CustomText>
+              <CustomText style={styles.completionSub}>{t('profile.completionSubtitle')}</CustomText>
             </View>
             <TouchableOpacity style={styles.completeNowBtn} onPress={() => handleMenuPress('PersonalInfo')} activeOpacity={0.85}>
-              <CustomText style={styles.completeNowText}>Complete Now</CustomText>
+              <CustomText style={styles.completeNowText}>{t('profile.completeNow')}</CustomText>
             </TouchableOpacity>
           </View>
 
@@ -161,11 +186,11 @@ export default function ProfileScreen({ navigation }) {
           <View style={styles.progressTrack}>
             <View style={[styles.progressFill, { width: `${completionPct}%` }]} />
           </View>
-          <CustomText style={styles.progressLabel}>{completionPct}% Complete</CustomText>
+          <CustomText style={styles.progressLabel}>{t('profile.completePercent', { percent: completionPct })}</CustomText>
 
           {/* Steps */}
           <View style={styles.stepsRow}>
-            {COMPLETION_STEPS.map((step) => (
+            {completionSteps.map((step) => (
               <CompletionStep key={step.id} step={step} />
             ))}
           </View>
@@ -173,9 +198,9 @@ export default function ProfileScreen({ navigation }) {
 
         {/* ── Account & Settings ── */}
         <Animated.View entering={FadeInDown.delay(190).duration(400)}>
-          <CustomText style={styles.sectionTitle}>Account & Settings</CustomText>
+          <CustomText style={styles.sectionTitle}>{t('profile.accountSettings')}</CustomText>
           <View style={styles.menuCard}>
-            {ACCOUNT_MENU.map((item, i) => (
+            {accountMenu.map((item, i) => (
               <MenuItem
                 key={item.id}
                 item={item}
@@ -188,9 +213,9 @@ export default function ProfileScreen({ navigation }) {
 
         {/* ── Support & About ── */}
         <Animated.View entering={FadeInDown.delay(250).duration(400)}>
-          <CustomText style={styles.sectionTitle}>Support & About</CustomText>
+          <CustomText style={styles.sectionTitle}>{t('profile.supportAbout')}</CustomText>
           <View style={styles.menuCard}>
-            {SUPPORT_MENU.map((item, i) => (
+            {supportMenu.map((item, i) => (
               <MenuItem
                 key={item.id}
                 item={item}
@@ -205,7 +230,7 @@ export default function ProfileScreen({ navigation }) {
         <Animated.View entering={FadeInDown.delay(300).duration(400)}>
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
             <Ionicons name="log-out-outline" size={20} color={color.RED_REJECT} />
-            <CustomText style={styles.logoutText}>Logout</CustomText>
+            <CustomText style={styles.logoutText}>{t('profile.logout')}</CustomText>
           </TouchableOpacity>
         </Animated.View>
 

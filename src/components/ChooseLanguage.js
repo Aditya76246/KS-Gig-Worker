@@ -9,48 +9,30 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import globalStyles from "../styles/globalStyles";
 import { color } from "../styles/theme";
 import CustomText from "../components/CustomText";
-import { useNavigation } from "@react-navigation/native";
 import SplashScreenBg from "../../assets/images/splashBg.png";
-const languages = [
-  {
-    id: 1,
-    title: "English",
-    subtitle: "English",
-    short: "Aa",
-  },
-  {
-    id: 2,
-    title: "हिंदी (Hindi)",
-    subtitle: "Hindi",
-    short: "अ",
-  },
-  {
-    id: 3,
-    title: "मराठी (Marathi)",
-    subtitle: "Marathi",
-    short: "म",
-  },
-  {
-    id: 4,
-    title: "ಕನ್ನಡ (Kannada)",
-    subtitle: "Kannada",
-    short: "ಚ",
-  },
-  {
-    id: 5,
-    title: "తెలుగు (Telugu)",
-    subtitle: "Telugu",
-    short: "తెలు",
-  },
-];
+import { useTranslation } from "../localization/i18n";
 
 export default function ChooseLanguage() {
-  const [selectedLanguage, setSelectedLanguage] = useState(1);
   const navigation = useNavigation();
+  const route = useRoute();
+  const { language, setLanguage, t, languageOptions } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(language);
+
+  const handleContinue = () => {
+    setLanguage(selectedLanguage);
+
+    if (route.params?.returnToProfile) {
+      navigation.goBack();
+      return;
+    }
+
+    navigation.navigate(route.params?.nextScreen ?? "Login");
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -67,38 +49,26 @@ export default function ChooseLanguage() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate("Login")}
-            style={styles.skipButton}
-          >
-            <CustomText style={styles.skipText}>
-              Skip
-            </CustomText>
-          </TouchableOpacity> */}
-
           <View style={styles.header}>
             <View style={styles.globeIconWrap}>
               <Ionicons name="globe-outline" size={38} color={color.GREEN} />
             </View>
 
-            <CustomText style={styles.title}>
-              Choose Language
-            </CustomText>
+            <CustomText style={styles.title}>{t("language.title")}</CustomText>
 
             <CustomText style={styles.subtitle}>
-              Select your preferred language
+              {t("language.subtitle")}
             </CustomText>
           </View>
 
-          {languages.map((item) => {
-            const isSelected = selectedLanguage === item.id;
+          {languageOptions.map((item) => {
+            const isSelected = selectedLanguage === item.code;
 
             return (
               <TouchableOpacity
-                key={item.id}
+                key={item.code}
                 activeOpacity={0.85}
-                onPress={() => setSelectedLanguage(item.id)}
+                onPress={() => setSelectedLanguage(item.code)}
                 style={[
                   styles.languageCard,
                   isSelected && styles.languageCardSelected,
@@ -115,7 +85,7 @@ export default function ChooseLanguage() {
 
                 <View style={{ flex: 1 }}>
                   <CustomText style={styles.languageTitle}>
-                    {item.title}
+                    {item.nativeTitle} ({t(item.titleKey)})
                   </CustomText>
 
                   <CustomText style={styles.languageSubtitle}>
@@ -137,11 +107,11 @@ export default function ChooseLanguage() {
           <View style={styles.footer}>
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() => navigation.navigate("Login")}
+              onPress={handleContinue}
               style={styles.continueButton}
             >
               <CustomText style={styles.continueText}>
-                Continue
+                {t("common.continue")}
               </CustomText>
 
               <View style={styles.continueArrowWrap}>
@@ -157,10 +127,8 @@ export default function ChooseLanguage() {
               />
 
               <CustomText style={styles.secureText}>
-                <CustomText style={styles.secureStrong}>
-                  100%
-                </CustomText>{" "}
-                Secure
+                <CustomText style={styles.secureStrong}>100%</CustomText>{" "}
+                {t("common.secure")}
               </CustomText>
             </View>
           </View>
@@ -173,7 +141,6 @@ export default function ChooseLanguage() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    // backgroundColor: color.SURFACE,
   },
   bg: {
     flex: 2,
@@ -187,17 +154,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 20,
     paddingBottom: 40,
-  },
-  skipButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-end",
-    marginTop: 10,
-  },
-  skipText: {
-    ...globalStyles.f16Bold,
-    color: color.GREEN,
-    marginLeft: 8,
   },
   header: {
     alignItems: "center",
@@ -227,44 +183,34 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   languageCard: {
-    height: 60,
+    minHeight: 60,
     borderRadius: 24,
     backgroundColor: "#ffffffbf",
-
     borderWidth: 1,
     borderColor: "#E2E2E2",
-
     marginBottom: 18,
-
     flexDirection: "row",
     alignItems: "center",
-
     paddingHorizontal: 18,
+    paddingVertical: 10,
   },
-
   languageCardSelected: {
     borderColor: color.GREEN,
     backgroundColor: "rgba(46,125,50,0.04)",
   },
-
   radioOuter: {
     width: 20,
     height: 20,
     borderRadius: 50,
-
     borderWidth: 2,
     borderColor: "#C8C8C8",
-
     justifyContent: "center",
     alignItems: "center",
-
     marginRight: 18,
   },
-
   radioOuterSelected: {
     borderColor: color.GREEN,
   },
-
   radioInner: {
     width: 18,
     height: 18,
@@ -280,11 +226,9 @@ const styles = StyleSheet.create({
     color: color.TEXT_MUTED,
     marginTop: 4,
   },
-
   languageBadge: {
     justifyContent: "center",
     alignItems: "center",
-
     paddingHorizontal: 10,
   },
   languageBadgeText: {
@@ -296,16 +240,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingBottom: 10,
   },
-
   continueButton: {
     height: 60,
     backgroundColor: color.GREEN,
-
     borderRadius: 26,
-
     justifyContent: "center",
     alignItems: "center",
-
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -314,7 +254,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 10,
     elevation: 8,
-
     position: "relative",
   },
   continueText: {
@@ -322,11 +261,9 @@ const styles = StyleSheet.create({
     color: color.WHITE,
     letterSpacing: 0.3,
   },
-
   continueArrowWrap: {
     position: "absolute",
     right: 24,
-
     justifyContent: "center",
     alignItems: "center",
   },

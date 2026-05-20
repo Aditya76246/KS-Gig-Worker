@@ -13,6 +13,7 @@ import CustomText from '../components/CustomText';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
 import useHideTabBarOnScroll from '../hooks/useHideTabBarOnScroll';
+import { useTranslation } from '../localization/i18n';
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -93,12 +94,12 @@ const TABS = [
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function StatusChip({ status }) {
+function StatusChip({ status, tx }) {
   const map = {
-    new:       { label: 'New',       bg: color.GREEN_BG,   text: color.GREEN },
-    accepted:  { label: 'Accepted',  bg: color.YELLOW_BG,  text: color.YELLOW_TEXT },
-    ongoing:   { label: 'Ongoing',   bg: '#fce4ec',        text: '#923357' },
-    completed: { label: 'Completed', bg: color.AVATAR_BG,  text: color.TEXT_MUTED },
+    new:       { label: tx('New'),       bg: color.GREEN_BG,   text: color.GREEN },
+    accepted:  { label: tx('Accepted'),  bg: color.YELLOW_BG,  text: color.YELLOW_TEXT },
+    ongoing:   { label: tx('Ongoing'),   bg: '#fce4ec',        text: '#923357' },
+    completed: { label: tx('Completed'), bg: color.AVATAR_BG,  text: color.TEXT_MUTED },
   };
   const s = map[status] || map.new;
   return (
@@ -118,7 +119,7 @@ function DetailRow({ icon, text, lib = 'Ionicons' }) {
   );
 }
 
-function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) {
+function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0, tx }) {
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)} style={styles.card}>
 
@@ -143,16 +144,16 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
 
       {/* ── Info Grid ── */}
       <View style={styles.infoGrid}>
-        <DetailRow icon="construct-outline"     text={booking.service} />
-        <DetailRow icon="calendar-outline"      text={booking.date} />
-        <DetailRow icon="location-outline"      text={booking.distance} />
-        <DetailRow icon="map-outline"           text={booking.location} />
+        <DetailRow icon="construct-outline"     text={tx(booking.service)} />
+        <DetailRow icon="calendar-outline"      text={tx(booking.date)} />
+        <DetailRow icon="location-outline"      text={tx(booking.distance)} />
+        <DetailRow icon="map-outline"           text={tx(booking.location)} />
       </View>
 
       {/* ── Description (new/accepted only) ── */}
       {(booking.status === 'new' || booking.status === 'accepted') && (
         <CustomText style={styles.description} numberOfLines={2}>
-          {booking.description}
+          {tx(booking.description)}
         </CustomText>
       )}
 
@@ -165,7 +166,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
             activeOpacity={0.8}
           >
             <Ionicons name="checkmark-circle-outline" size={18} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>Accept</CustomText>
+            <CustomText style={styles.acceptText}>{tx('Accept')}</CustomText>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -173,7 +174,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
             onPress={() => onViewDetails(booking)}
             activeOpacity={0.8}
           >
-            <CustomText style={styles.viewText}>View Details</CustomText>
+            <CustomText style={styles.viewText}>{tx('View Details')}</CustomText>
           </TouchableOpacity>
         </View>
       )}
@@ -186,7 +187,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
             activeOpacity={0.8}
           >
             <Ionicons name="eye-outline" size={18} color={color.WHITE} />
-            <CustomText style={styles.acceptText}>View Details</CustomText>
+            <CustomText style={styles.acceptText}>{tx('View Details')}</CustomText>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -194,7 +195,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
             onPress={() => onReject(booking.id)}
             activeOpacity={0.8}
           >
-            <CustomText style={styles.rejectText}>Reject</CustomText>
+            <CustomText style={styles.rejectText}>{tx('Reject')}</CustomText>
           </TouchableOpacity>
         </View>
       )}
@@ -206,7 +207,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
           activeOpacity={0.8}
         >
           <Ionicons name="navigate-outline" size={18} color={color.WHITE} />
-          <CustomText style={styles.acceptText}>Track Job</CustomText>
+          <CustomText style={styles.acceptText}>{tx('Track Job')}</CustomText>
         </TouchableOpacity>
       )}
 
@@ -216,7 +217,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
           onPress={() => onViewDetails(booking)}
           activeOpacity={0.8}
         >
-          <CustomText style={styles.viewText}>View Summary</CustomText>
+          <CustomText style={styles.viewText}>{tx('View Summary')}</CustomText>
         </TouchableOpacity>
       )}
     </Animated.View>
@@ -228,6 +229,7 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay = 0 }) 
 export default function BookingsScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const { bottomNavHidden, handleScroll } = useHideTabBarOnScroll();
+  const { tx } = useTranslation();
   const [activeTab, setActiveTab] = useState('new');
   const [bookings, setBookings] = useState(BOOKINGS);
 
@@ -272,7 +274,7 @@ export default function BookingsScreen({ navigation }) {
                 activeOpacity={0.75}
               >
                 <CustomText style={[styles.tabLabel, active && { color: color.GREEN }]}>
-                  {tab.label}
+                  {tx(tab.label)}
                   {count > 0 ? ` (${count})` : ''}
                 </CustomText>
                 {active && <View style={styles.tabUnderline} />}
@@ -296,11 +298,11 @@ export default function BookingsScreen({ navigation }) {
         {filtered.length === 0 ? (
           <Animated.View entering={FadeInDown.duration(400)} style={styles.emptyState}>
             <Ionicons name="clipboard-outline" size={52} color={color.BORDER_LIGHT} />
-            <CustomText style={styles.emptyTitle}>No bookings here</CustomText>
+            <CustomText style={styles.emptyTitle}>{tx('No bookings here')}</CustomText>
             <CustomText style={styles.emptySubtitle}>
               {activeTab === 'new'
-                ? 'New booking requests will appear here'
-                : `You have no ${activeTab} bookings`}
+                ? tx('New booking requests will appear here')
+                : tx('You have no {{status}} bookings', { status: tx(TABS.find((tab) => tab.key === activeTab)?.label ?? activeTab).toLowerCase() })}
             </CustomText>
           </Animated.View>
         ) : (
@@ -312,6 +314,7 @@ export default function BookingsScreen({ navigation }) {
               onReject={handleReject}
               onViewDetails={handleViewDetails}
               delay={i * 60}
+              tx={tx}
             />
           ))
         )}

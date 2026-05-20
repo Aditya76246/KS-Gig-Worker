@@ -18,6 +18,7 @@ import CustomText from '../components/CustomText';
 import InnerScreenHeader from '../components/InnerScreenHeader';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
+import { useTranslation } from '../localization/i18n';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const TOTAL_STEPS = 3;
@@ -42,7 +43,7 @@ const STEP_META = [
 // Shared Sub-components
 // ═══════════════════════════════════════════════════════════════════════════════
 
-function StepIndicator({ current }) {
+function StepIndicator({ current, tx }) {
   return (
     <View style={styles.stepIndicatorRow}>
       {STEP_META.map((s, i) => {
@@ -58,7 +59,7 @@ function StepIndicator({ current }) {
                 }
               </View>
               <CustomText style={[styles.stepNodeLabel, (isDone || isActive) && styles.stepNodeLabelActive]}>
-                {s.label}
+                {tx(s.label)}
               </CustomText>
             </View>
             {i < TOTAL_STEPS - 1 && (
@@ -73,7 +74,7 @@ function StepIndicator({ current }) {
   );
 }
 
-function AvatarUpload({ uri, onPress }) {
+function AvatarUpload({ uri, onPress, tx }) {
   return (
     <View style={styles.avatarSection}>
       <TouchableOpacity style={styles.avatarContainer} onPress={onPress} activeOpacity={0.85}>
@@ -86,7 +87,7 @@ function AvatarUpload({ uri, onPress }) {
       </TouchableOpacity>
       <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.uploadPhotoBtn}>
         <Ionicons name="cloud-upload-outline" size={15} color={color.GREEN} />
-        <CustomText style={styles.uploadPhotoText}>Upload Photo</CustomText>
+        <CustomText style={styles.uploadPhotoText}>{tx('Upload Photo')}</CustomText>
       </TouchableOpacity>
     </View>
   );
@@ -117,7 +118,7 @@ function InputField({ label, value, onChangeText, placeholder, icon, keyboardTyp
   );
 }
 
-function Dropdown({ label, value, onSelect, options, placeholder, sheetTitle, iconNode, hint }) {
+function Dropdown({ label, value, onSelect, options, placeholder, sheetTitle, iconNode, hint, tx = (text) => text }) {
   const [open, setOpen] = useState(false);
   return (
     <View style={styles.fieldGroup}>
@@ -129,7 +130,7 @@ function Dropdown({ label, value, onSelect, options, placeholder, sheetTitle, ic
       >
         {iconNode && <View style={styles.inputIcon}>{iconNode}</View>}
         <CustomText style={[styles.dropdownValue, !value && { color: color.TEXT_MUTED }]}>
-          {value || placeholder || 'Select'}
+          {value ? tx(value) : placeholder || tx('Select')}
         </CustomText>
         <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={16} color={color.TEXT_MUTED} />
       </TouchableOpacity>
@@ -149,7 +150,7 @@ function Dropdown({ label, value, onSelect, options, placeholder, sheetTitle, ic
                   activeOpacity={0.7}
                 >
                   <CustomText style={[styles.dropdownOptionText, value === opt && styles.dropdownOptionTextActive]}>
-                    {opt}
+                    {tx(opt)}
                   </CustomText>
                   {value === opt && <Ionicons name="checkmark-circle" size={18} color={color.GREEN} />}
                 </TouchableOpacity>
@@ -162,7 +163,7 @@ function Dropdown({ label, value, onSelect, options, placeholder, sheetTitle, ic
   );
 }
 
-function ChipSelector({ label, options, selected, onToggle, iconNode, hint }) {
+function ChipSelector({ label, options, selected, onToggle, iconNode, hint, tx = (text) => text }) {
   return (
     <View style={styles.fieldGroup}>
       <View style={styles.chipLabelRow}>
@@ -181,7 +182,7 @@ function ChipSelector({ label, options, selected, onToggle, iconNode, hint }) {
               activeOpacity={0.75}
             >
               {active && <Ionicons name="checkmark" size={12} color={color.GREEN} style={{ marginRight: 4 }} />}
-              <CustomText style={[styles.chipText, active && styles.chipTextActive]}>{opt}</CustomText>
+              <CustomText style={[styles.chipText, active && styles.chipTextActive]}>{tx(opt)}</CustomText>
             </TouchableOpacity>
           );
         })}
@@ -214,42 +215,43 @@ function CardSection({ title, iconName }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // Step 1 — Personal Information
 // ═══════════════════════════════════════════════════════════════════════════════
-function Step1({ data, onChange }) {
+function Step1({ data, onChange, tx }) {
   return (
     <Animated.View entering={FadeInDown.duration(350)} style={styles.stepContent}>
       <View style={styles.titleBlock}>
-        <CustomText style={styles.pageTitle}>Personal Information</CustomText>
+        <CustomText style={styles.pageTitle}>{tx('Personal Information')}</CustomText>
         <CustomText style={styles.pageSubtitle}>
-          Tell us about yourself so farmers can trust you with their work.
+          {tx('Tell us about yourself so farmers can trust you with their work.')}
         </CustomText>
       </View>
 
-      <AvatarUpload uri={data.photoUri} onPress={() => {}} />
+      <AvatarUpload uri={data.photoUri} onPress={() => {}} tx={tx} />
 
       <View style={styles.formCard}>
         <InputField
-          label="Full Name"
+          label={tx('Full Name')}
           value={data.fullName}
           onChangeText={(v) => onChange('fullName', v)}
-          placeholder="Enter your full name"
+          placeholder={tx('Enter your full name')}
           icon="person-outline"
         />
 
         <View style={styles.rowFields}>
           <View style={styles.rowFieldHalf}>
             <Dropdown
-              label="Gender"
+              label={tx('Gender')}
               value={data.gender}
               onSelect={(v) => onChange('gender', v)}
               options={GENDER_OPTIONS}
-              placeholder="Select"
-              sheetTitle="Select Gender"
+              placeholder={tx('Select')}
+              sheetTitle={tx('Select Gender')}
+              tx={tx}
               iconNode={<MaterialCommunityIcons name="gender-male-female" size={18} color={data.gender ? color.TEXT_MAIN : color.TEXT_MUTED} />}
             />
           </View>
           <View style={styles.rowFieldHalf}>
             <InputField
-              label="Age"
+              label={tx('Age')}
               value={data.age}
               onChangeText={(v) => onChange('age', v)}
               placeholder="e.g. 28"
@@ -260,7 +262,7 @@ function Step1({ data, onChange }) {
         </View>
 
         <InputField
-          label="Mobile Number"
+          label={tx('Mobile Number')}
           value={data.mobile}
           onChangeText={(v) => onChange('mobile', v)}
           placeholder="+91 XXXXX XXXXX"
@@ -269,7 +271,7 @@ function Step1({ data, onChange }) {
         />
 
         <InputField
-          label="Address (Village / District)"
+          label={tx('Address (Village / District)')}
           value={data.address}
           onChangeText={(v) => onChange('address', v)}
           placeholder="e.g. Mapusa, North Goa"
@@ -283,7 +285,7 @@ function Step1({ data, onChange }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // Step 2 — Driving Details
 // ═══════════════════════════════════════════════════════════════════════════════
-function Step2({ data, onChange }) {
+function Step2({ data, onChange, tx }) {
   const toggleVehicle = (v) =>
     onChange('vehicleTypes', data.vehicleTypes.includes(v)
       ? data.vehicleTypes.filter((x) => x !== v)
@@ -292,39 +294,40 @@ function Step2({ data, onChange }) {
   return (
     <Animated.View entering={FadeInDown.duration(350)} style={styles.stepContent}>
       <View style={styles.titleBlock}>
-        <CustomText style={styles.pageTitle}>Driving Details</CustomText>
+        <CustomText style={styles.pageTitle}>{tx('Driving Details')}</CustomText>
         <CustomText style={styles.pageSubtitle}>
-          Share your driving background so we can match you with the right jobs.
+          {tx('Share your driving background so we can match you with the right jobs.')}
         </CustomText>
       </View>
 
       {/* License card */}
       <View style={styles.formCard}>
-        <CardSection title="License Information" iconName="ribbon-outline" />
+        <CardSection title={tx('License Information')} iconName="ribbon-outline" />
 
         <InputField
-          label="Driving License Number"
+          label={tx('Driving License Number')}
           value={data.licenseNumber}
           onChangeText={(v) => onChange('licenseNumber', v.toUpperCase())}
           placeholder="e.g. MH1234567890123"
           icon="card-outline"
-          hint="Enter as printed on your license"
+          hint={tx('Enter as printed on your license')}
         />
 
         <Dropdown
-          label="License Type"
+          label={tx('License Type')}
           value={data.licenseType}
           onSelect={(v) => onChange('licenseType', v)}
           options={LICENSE_TYPES}
-          placeholder="Select license type"
-          sheetTitle="Select License Type"
+          placeholder={tx('Select license type')}
+          sheetTitle={tx('Select License Type')}
+          tx={tx}
           iconNode={<Ionicons name="document-text-outline" size={18} color={data.licenseType ? color.TEXT_MAIN : color.TEXT_MUTED} />}
         />
 
         <View style={styles.rowFields}>
           <View style={styles.rowFieldHalf}>
             <InputField
-              label="Issue Date"
+              label={tx('Issue Date')}
               value={data.licenseIssueDate}
               onChangeText={(v) => onChange('licenseIssueDate', v)}
               placeholder="DD/MM/YYYY"
@@ -334,7 +337,7 @@ function Step2({ data, onChange }) {
           </View>
           <View style={styles.rowFieldHalf}>
             <InputField
-              label="Expiry Date"
+              label={tx('Expiry Date')}
               value={data.licenseExpiry}
               onChangeText={(v) => onChange('licenseExpiry', v)}
               placeholder="DD/MM/YYYY"
@@ -345,35 +348,37 @@ function Step2({ data, onChange }) {
         </View>
 
         <Dropdown
-          label="Driving Experience"
+          label={tx('Driving Experience')}
           value={data.experience}
           onSelect={(v) => onChange('experience', v)}
           options={EXPERIENCE_OPTIONS}
-          placeholder="Select experience"
-          sheetTitle="Years of Driving Experience"
+          placeholder={tx('Select experience')}
+          sheetTitle={tx('Years of Driving Experience')}
+          tx={tx}
           iconNode={<MaterialCommunityIcons name="calendar-star" size={18} color={data.experience ? color.TEXT_MAIN : color.TEXT_MUTED} />}
         />
       </View>
 
       {/* Vehicles owned card */}
       <View style={styles.formCard}>
-        <CardSection title="Vehicles Owned" iconName="construct-outline" />
+        <CardSection title={tx('Vehicles Owned')} iconName="construct-outline" />
         <ChipSelector
-          label="Select the equipment you own"
+          label={tx('Select the equipment you own')}
           options={VEHICLE_TYPES}
           selected={data.vehicleTypes}
           onToggle={toggleVehicle}
-          hint="Select all that apply"
+          hint={tx('Select all that apply')}
+          tx={tx}
           iconNode={<MaterialCommunityIcons name="tractor" size={16} color={color.GREEN} style={{ marginRight: 6 }} />}
         />
       </View>
 
       {/* Vehicle registration */}
       <View style={styles.formCard}>
-        <CardSection title="Vehicle Registration" iconName="car-outline" />
+        <CardSection title={tx('Vehicle Registration')} iconName="car-outline" />
 
         <InputField
-          label="Primary Vehicle Number"
+          label={tx('Primary Vehicle Number')}
           value={data.vehicleNumber}
           onChangeText={(v) => onChange('vehicleNumber', v.toUpperCase())}
           placeholder="e.g. MH 12 AB 3456"
@@ -383,7 +388,7 @@ function Step2({ data, onChange }) {
         <View style={styles.rowFields}>
           <View style={styles.rowFieldHalf}>
             <InputField
-              label="Make / Brand"
+              label={tx('Make / Brand')}
               value={data.vehicleMake}
               onChangeText={(v) => onChange('vehicleMake', v)}
               placeholder="e.g. Mahindra"
@@ -392,7 +397,7 @@ function Step2({ data, onChange }) {
           </View>
           <View style={styles.rowFieldHalf}>
             <InputField
-              label="Model / Year"
+              label={tx('Model / Year')}
               value={data.vehicleModel}
               onChangeText={(v) => onChange('vehicleModel', v)}
               placeholder="e.g. 575 / 2019"
@@ -402,7 +407,7 @@ function Step2({ data, onChange }) {
         </View>
 
         <InputField
-          label="Number of Vehicles Owned"
+          label={tx('Number of Vehicles Owned')}
           value={data.vehicleCount}
           onChangeText={(v) => onChange('vehicleCount', v)}
           placeholder="e.g. 2"
@@ -417,7 +422,7 @@ function Step2({ data, onChange }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // Step 3 — Bank Details
 // ═══════════════════════════════════════════════════════════════════════════════
-function Step3({ data, onChange }) {
+function Step3({ data, onChange, tx }) {
   const mismatch =
     data.accountNumber.length > 0 &&
     data.confirmAccount.length > 0 &&
@@ -430,35 +435,35 @@ function Step3({ data, onChange }) {
   return (
     <Animated.View entering={FadeInDown.duration(350)} style={styles.stepContent}>
       <View style={styles.titleBlock}>
-        <CustomText style={styles.pageTitle}>Bank Details</CustomText>
+        <CustomText style={styles.pageTitle}>{tx('Bank Details')}</CustomText>
         <CustomText style={styles.pageSubtitle}>
-          Your earnings will be deposited directly after each job is completed.
+          {tx('Your earnings will be deposited directly after each job is completed.')}
         </CustomText>
       </View>
 
-      <InfoBanner text="Your bank details are encrypted and stored securely. We never share them with third parties." />
+      <InfoBanner text={tx('Your bank details are encrypted and stored securely. We never share them with third parties.')} />
 
       <View style={styles.formCard}>
         <InputField
-          label="Account Holder Name"
+          label={tx('Account Holder Name')}
           value={data.holderName}
           onChangeText={(v) => onChange('holderName', v)}
-          placeholder="As per bank records"
+          placeholder={tx('As per bank records')}
           icon="person-outline"
         />
 
         <InputField
-          label="Account Number"
+          label={tx('Account Number')}
           value={data.accountNumber}
           onChangeText={(v) => onChange('accountNumber', v)}
-          placeholder="Enter account number"
+          placeholder={tx('Enter account number')}
           icon="card-outline"
           keyboardType="number-pad"
         />
 
         {/* Confirm account with match/error feedback */}
         <View style={styles.fieldGroup}>
-          <CustomText style={styles.fieldLabel}>Confirm Account Number</CustomText>
+          <CustomText style={styles.fieldLabel}>{tx('Confirm Account Number')}</CustomText>
           <View style={[styles.inputBox, mismatch && styles.inputBoxError, match && styles.inputBoxMatch]}>
             <Ionicons
               name="card-outline"
@@ -470,7 +475,7 @@ function Step3({ data, onChange }) {
               style={styles.input}
               value={data.confirmAccount}
               onChangeText={(v) => onChange('confirmAccount', v)}
-              placeholder="Re-enter account number"
+              placeholder={tx('Re-enter account number')}
               placeholderTextColor={color.TEXT_MUTED}
               keyboardType="number-pad"
             />
@@ -480,27 +485,28 @@ function Step3({ data, onChange }) {
           {mismatch && (
             <View style={styles.inlineError}>
               <Ionicons name="alert-circle-outline" size={14} color="#c62828" />
-              <CustomText style={styles.inlineErrorText}>Account numbers do not match</CustomText>
+              <CustomText style={styles.inlineErrorText}>{tx('Account numbers do not match')}</CustomText>
             </View>
           )}
         </View>
 
         <InputField
-          label="IFSC Code"
+          label={tx('IFSC Code')}
           value={data.ifsc}
           onChangeText={(v) => onChange('ifsc', v.toUpperCase())}
           placeholder="e.g. SBIN0001234"
           icon="code-outline"
-          hint="11-character code on your chequebook or passbook"
+          hint={tx('11-character code on your chequebook or passbook')}
         />
 
         <Dropdown
-          label="Bank Name"
+          label={tx('Bank Name')}
           value={data.bankName}
           onSelect={(v) => onChange('bankName', v)}
           options={BANK_OPTIONS}
-          placeholder="Select bank"
-          sheetTitle="Select Your Bank"
+          placeholder={tx('Select bank')}
+          sheetTitle={tx('Select Your Bank')}
+          tx={tx}
           iconNode={<Ionicons name="business-outline" size={18} color={data.bankName ? color.TEXT_MAIN : color.TEXT_MUTED} />}
         />
       </View>
@@ -508,7 +514,7 @@ function Step3({ data, onChange }) {
       {/* UPI alternative */}
       <View style={styles.dividerRow}>
         <View style={styles.dividerLine} />
-        <CustomText style={styles.dividerText}>or link UPI instead</CustomText>
+        <CustomText style={styles.dividerText}>{tx('or link UPI instead')}</CustomText>
         <View style={styles.dividerLine} />
       </View>
 
@@ -517,8 +523,8 @@ function Step3({ data, onChange }) {
           <MaterialCommunityIcons name="cellphone" size={20} color={color.GREEN} />
         </View>
         <View style={{ flex: 1 }}>
-          <CustomText style={styles.upiBtnTitle}>Link UPI ID</CustomText>
-          <CustomText style={styles.upiBtnSub}>Instant payouts via PhonePe / GPay / Paytm</CustomText>
+          <CustomText style={styles.upiBtnTitle}>{tx('Link UPI ID')}</CustomText>
+          <CustomText style={styles.upiBtnSub}>{tx('Instant payouts via PhonePe / GPay / Paytm')}</CustomText>
         </View>
         <Ionicons name="chevron-forward" size={16} color={color.TEXT_MUTED} />
       </TouchableOpacity>
@@ -530,6 +536,7 @@ function Step3({ data, onChange }) {
 // Main Screen
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function PersonalInfoScreen({ navigation }) {
+  const { tx } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
 
   const [step1, setStep1] = useState({
@@ -582,11 +589,11 @@ export default function PersonalInfoScreen({ navigation }) {
 
       <InnerScreenHeader
         navigation={{ goBack: handleBack }}
-        title={STEP_META[currentStep - 1].label + ' Details'}
+        title={tx('{{step}} Details', { step: tx(STEP_META[currentStep - 1].label) })}
       />
 
       <View style={styles.stepIndicatorWrapper}>
-        <StepIndicator current={currentStep} />
+        <StepIndicator current={currentStep} tx={tx} />
       </View>
 
       <ScrollView
@@ -594,9 +601,9 @@ export default function PersonalInfoScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {currentStep === 1 && <Step1 data={step1} onChange={ch1} />}
-        {currentStep === 2 && <Step2 data={step2} onChange={ch2} />}
-        {currentStep === 3 && <Step3 data={step3} onChange={ch3} />}
+        {currentStep === 1 && <Step1 data={step1} onChange={ch1} tx={tx} />}
+        {currentStep === 2 && <Step2 data={step2} onChange={ch2} tx={tx} />}
+        {currentStep === 3 && <Step3 data={step3} onChange={ch3} tx={tx} />}
         <View style={{ height: 110 }} />
       </ScrollView>
 
@@ -607,7 +614,7 @@ export default function PersonalInfoScreen({ navigation }) {
           activeOpacity={canProceed ? 0.85 : 1}
         >
           <CustomText style={styles.saveBtnText}>
-            {currentStep === TOTAL_STEPS ? 'Submit' : 'Save & Continue'}
+            {currentStep === TOTAL_STEPS ? tx('Submit') : tx('Save & Continue')}
           </CustomText>
           <Ionicons
             name={currentStep === TOTAL_STEPS ? 'checkmark' : 'arrow-forward'}
@@ -616,7 +623,7 @@ export default function PersonalInfoScreen({ navigation }) {
             style={{ marginLeft: 8 }}
           />
         </TouchableOpacity>
-        <CustomText style={styles.stepCounter}>Step {currentStep} of {TOTAL_STEPS}</CustomText>
+        <CustomText style={styles.stepCounter}>{tx('Step {{current}} of {{total}}', { current: currentStep, total: TOTAL_STEPS })}</CustomText>
       </View>
     </KeyboardAvoidingView>
   );

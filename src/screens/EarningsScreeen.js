@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import useHideTabBarOnScroll from "../hooks/useHideTabBarOnScroll";
+import { useTranslation } from "../localization/i18n";
 
 const totals = [
   { label: "Confirmed", value: "Rs 12,480", icon: "checkmark-circle", tone: "#E9FBEF" },
@@ -68,6 +69,7 @@ const settlementRows = [
 const EarningsScreen = () => {
   const insets = useSafeAreaInsets();
   const { bottomNavHidden, handleScroll } = useHideTabBarOnScroll();
+  const { tx } = useTranslation();
 
   return (
     <View style={styles.screen}>
@@ -89,26 +91,26 @@ const EarningsScreen = () => {
         >
           <View style={styles.heroTop}>
             <View>
-              <Text style={styles.eyebrow}>Digital wallet</Text>
-              <Text style={styles.title}>Earnings</Text>
+              <Text style={styles.eyebrow}>{tx("Digital wallet")}</Text>
+              <Text style={styles.title}>{tx("Earnings")}</Text>
             </View>
             <View style={styles.verifiedPill}>
               <Ionicons name="shield-checkmark" size={14} color="#BBF7D0" />
-              <Text style={styles.verifiedText}>KYC verified</Text>
+              <Text style={styles.verifiedText}>{tx("KYC verified")}</Text>
             </View>
           </View>
 
           <View style={styles.balanceCard}>
-            <Text style={styles.balanceLabel}>Available to withdraw</Text>
+            <Text style={styles.balanceLabel}>{tx("Available to withdraw")}</Text>
             <Text style={styles.balanceValue}>Rs 12,480</Text>
             <View style={styles.balanceMetaRow}>
               <View style={styles.balanceMeta}>
                 <Ionicons name="business" size={13} color="#DCFCE7" />
-                <Text style={styles.balanceMetaText}>SBI ending 9012</Text>
+                <Text style={styles.balanceMetaText}>{tx("SBI ending 9012")}</Text>
               </View>
               <View style={styles.balanceMeta}>
                 <Ionicons name="sync" size={13} color="#DCFCE7" />
-                <Text style={styles.balanceMetaText}>Synced today</Text>
+                <Text style={styles.balanceMetaText}>{tx("Synced today")}</Text>
               </View>
             </View>
           </View>
@@ -116,7 +118,7 @@ const EarningsScreen = () => {
           <View style={styles.heroActions}>
             <TouchableOpacity activeOpacity={0.86} style={styles.primaryButton}>
               <MaterialCommunityIcons name="bank-transfer-out" size={20} color="#0B3B21" />
-              <Text style={styles.primaryButtonText}>Withdraw</Text>
+              <Text style={styles.primaryButtonText}>{tx("Withdraw")}</Text>
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.86} style={styles.voiceButton}>
               <MaterialCommunityIcons name="microphone" size={19} color="#FFFFFF" />
@@ -131,7 +133,7 @@ const EarningsScreen = () => {
                 <Ionicons name={item.icon} size={18} color="#15803D" />
               </View>
               <Text style={styles.summaryValue}>{item.value}</Text>
-              <Text style={styles.summaryLabel}>{item.label}</Text>
+              <Text style={styles.summaryLabel}>{tx(item.label)}</Text>
             </View>
           ))}
         </View>
@@ -141,17 +143,17 @@ const EarningsScreen = () => {
             <MaterialCommunityIcons name="cloud-check" size={22} color="#15803D" />
           </View>
           <View style={styles.noticeCopy}>
-            <Text style={styles.noticeTitle}>Offline punch payments</Text>
+            <Text style={styles.noticeTitle}>{tx("Offline punch payments")}</Text>
             <Text style={styles.noticeText}>
-              Punch-in records saved during weak internet will sync before final payout.
+              {tx("Punch-in records saved during weak internet will sync before final payout.")}
             </Text>
           </View>
         </View>
 
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionTitle}>Settlement summary</Text>
-            <Text style={styles.sectionSubtitle}>FPO and platform commission auto-calculated</Text>
+            <Text style={styles.sectionTitle}>{tx("Settlement summary")}</Text>
+            <Text style={styles.sectionSubtitle}>{tx("FPO and platform commission auto-calculated")}</Text>
           </View>
         </View>
 
@@ -159,7 +161,7 @@ const EarningsScreen = () => {
           {settlementRows.map((row) => (
             <View key={row.label} style={styles.settlementRow}>
               <Text style={[styles.settlementLabel, row.strong && styles.settlementStrong]}>
-                {row.label}
+                {tx(row.label)}
               </Text>
               <Text style={[styles.settlementValue, row.strong && styles.settlementStrong]}>
                 {row.value}
@@ -170,12 +172,12 @@ const EarningsScreen = () => {
 
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionTitle}>Payment log</Text>
-            <Text style={styles.sectionSubtitle}>Cash and online transfer history</Text>
+            <Text style={styles.sectionTitle}>{tx("Payment log")}</Text>
+            <Text style={styles.sectionSubtitle}>{tx("Cash and online transfer history")}</Text>
           </View>
           <TouchableOpacity activeOpacity={0.8} style={styles.filterPill}>
             <Ionicons name="filter" size={13} color="#15803D" />
-            <Text style={styles.filterText}>All</Text>
+            <Text style={styles.filterText}>{tx("All")}</Text>
           </TouchableOpacity>
         </View>
 
@@ -185,10 +187,10 @@ const EarningsScreen = () => {
               <MaterialCommunityIcons name={log.icon} size={21} color={log.color} />
             </View>
             <View style={styles.logCopy}>
-              <Text style={styles.logTitle}>{log.title}</Text>
-              <Text style={styles.logMeta}>{log.meta}</Text>
+              <Text style={styles.logTitle}>{tx(log.title)}</Text>
+              <Text style={styles.logMeta}>{tx(log.meta)}</Text>
               <View style={styles.statusPill}>
-                <Text style={styles.statusText}>{log.status}</Text>
+                <Text style={styles.statusText}>{tx(log.status)}</Text>
               </View>
             </View>
             <Text style={[styles.logAmount, log.amount.startsWith("-") && styles.logDebit]}>

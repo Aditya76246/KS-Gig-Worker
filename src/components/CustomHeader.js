@@ -5,19 +5,22 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CustomText from './CustomText';
+import { useTranslation } from '../localization/i18n';
 
 function DutySwitch({ dutyOn, onPress }) {
+  const { tx } = useTranslation();
+
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="switch"
       accessibilityState={{ checked: dutyOn }}
-      accessibilityLabel={dutyOn ? 'Online' : 'Offline'}
+      accessibilityLabel={dutyOn ? tx('Online') : tx('Offline')}
       style={styles.dutyWrap}
       android_ripple={{ color: 'rgba(255,255,255,0.18)', borderless: true, radius: 24 }}
     >
       <CustomText style={[styles.dutyText, dutyOn && styles.dutyTextActive]}>
-        {dutyOn ? 'ONLINE' : 'OFFLINE'}
+        {dutyOn ? tx('ONLINE') : tx('OFFLINE')}
       </CustomText>
       <View style={[styles.switchTrack, dutyOn && styles.switchTrackActive]}>
         <View style={[styles.switchThumb, dutyOn && styles.switchThumbActive]}>
@@ -37,6 +40,7 @@ export default function CustomHeader({
 }) {
   const [dutyOn, setDutyOn] = useState(true);
   const insets = useSafeAreaInsets();
+  const { tx } = useTranslation();
   const firstName = userName.split(' ')[0];
 
   return (
@@ -58,12 +62,12 @@ export default function CustomHeader({
 
           <View style={styles.headerCopy}>
             <CustomText style={styles.headerTitle} numberOfLines={1}>
-              Hi, {firstName} - {location}
+              {tx('Hi, {{name}} - {{location}}', { name: firstName, location })}
             </CustomText>
             <View style={styles.metaRow}>
               <View style={styles.metaPill}>
                 <Ionicons name="briefcase" size={11} color="#DCFCE7" />
-                <CustomText style={styles.metaText}>{liveJobs}</CustomText>
+                <CustomText style={styles.metaText}>{tx(liveJobs)}</CustomText>
               </View>
               <View style={styles.metaPill}>
                 <Ionicons name="star" size={11} color="#FCD34D" />

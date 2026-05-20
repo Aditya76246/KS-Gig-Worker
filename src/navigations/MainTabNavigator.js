@@ -19,14 +19,15 @@ import HomeStackNavigator from './HomeStackNavigator';
 import BookingsStackNavigator from './BookingsStackNavigator';
 import EarningsStackNavigator from './EarningsStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
+import { useTranslation } from '../localization/i18n';
 
 const Tab = createBottomTabNavigator();
 
 const TAB_CONFIG = [
-  { name: 'HomeTab', label: 'Home', icon: 'home', iconOutline: 'home-outline' },
-  { name: 'BookingsTab', label: 'Jobs', icon: 'briefcase', iconOutline: 'briefcase-outline' },
-  { name: 'EarningsTab', label: 'Wallet', icon: 'wallet', iconOutline: 'wallet-outline' },
-  { name: 'ProfileTab', label: 'Profile', icon: 'person', iconOutline: 'person-outline' },
+  { name: 'HomeTab', labelKey: 'tabs.home', icon: 'home', iconOutline: 'home-outline' },
+  { name: 'BookingsTab', labelKey: 'tabs.jobs', icon: 'briefcase', iconOutline: 'briefcase-outline' },
+  { name: 'EarningsTab', labelKey: 'tabs.wallet', icon: 'wallet', iconOutline: 'wallet-outline' },
+  { name: 'ProfileTab', labelKey: 'tabs.profile', icon: 'person', iconOutline: 'person-outline' },
 ];
 
 const TAB_ROOT_ROUTES = {
@@ -105,6 +106,7 @@ function TabButton({ tab, isFocused, onPress, onLongPress }) {
 
 function CustomTabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const hiddenAnim = useRef(new Animated.Value(0)).current;
   const isHiddenRef = useRef(false);
   const [tabBarHidden, setTabBarHidden] = useState(false);
@@ -174,6 +176,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
         {state.routes.map((route, index) => {
           const tab = TAB_CONFIG.find((t) => t.name === route.name);
           if (!tab) return null;
+          const translatedTab = { ...tab, label: t(tab.labelKey) };
 
           const isFocused = state.index === index;
 
@@ -202,7 +205,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
           return (
             <TabButton
               key={route.key}
-              tab={tab}
+              tab={translatedTab}
               isFocused={isFocused}
               onPress={onPress}
               onLongPress={onLongPress}
@@ -217,6 +220,8 @@ function CustomTabBar({ state, descriptors, navigation }) {
 // ─── Main Navigator ───────────────────────────────────────────────────────────
 
 export default function MainTabNavigator() {
+  const { t } = useTranslation();
+
   return (
     <Tab.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
@@ -237,10 +242,10 @@ export default function MainTabNavigator() {
         },
       })}
     >
-      <Tab.Screen name="HomeTab" component={HomeStackNavigator} options={{ title: 'Home' }} />
-      <Tab.Screen name="BookingsTab" component={BookingsStackNavigator} options={{ title: 'Bookings' }} />
-      <Tab.Screen name="EarningsTab" component={EarningsStackNavigator} options={{ title: 'Earnings' }} />
-      <Tab.Screen name="ProfileTab" component={ProfileStackNavigator} options={{ title: 'Profile' }} />
+      <Tab.Screen name="HomeTab" component={HomeStackNavigator} options={{ title: t('tabs.home') }} />
+      <Tab.Screen name="BookingsTab" component={BookingsStackNavigator} options={{ title: t('tabs.bookings') }} />
+      <Tab.Screen name="EarningsTab" component={EarningsStackNavigator} options={{ title: t('tabs.earnings') }} />
+      <Tab.Screen name="ProfileTab" component={ProfileStackNavigator} options={{ title: t('tabs.profile') }} />
     </Tab.Navigator>
   );
 }

@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ProfileScreen from '../screens/ProfileScreen';
 import PersonalInfoScreen from '../screens/PersonalInfoScreen';
 import DocumentsScreen from '../screens/DocumentsScreen';
+import ChooseLanguage from '../components/ChooseLanguage';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,12 @@ export default function ProfileStackNavigator() {
       <Stack.Screen
         name="Documents"
         component={DocumentsScreen}
+        options={{ tabBarStyle: { display: 'none' } }}
+      />
+
+      <Stack.Screen
+        name="ChooseLanguage"
+        component={ChooseLanguage}
         options={{ tabBarStyle: { display: 'none' } }}
       />
 

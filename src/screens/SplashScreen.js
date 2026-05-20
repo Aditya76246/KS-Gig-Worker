@@ -14,9 +14,11 @@ import KSLogo from '../../assets/icons/iconpngplain2.png';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
 import CustomText from '../components/CustomText';
-import ChooseLanguage from '../components/ChooseLanguage';
+import { useTranslation } from '../localization/i18n';
 
 export default function SplashScreen({ navigation }) {
+    const { t } = useTranslation();
+
     return (
         <View style={styles.container}>
             <StatusBar style="dark" translucent backgroundColor="transparent" />
@@ -35,7 +37,7 @@ export default function SplashScreen({ navigation }) {
                     />
 
                     <CustomText style={styles.subtitle}>
-                        Smart Equipment. Stronger Farms.
+                        {t('splash.subtitle')}
                     </CustomText>
                 </View>
 
@@ -51,18 +53,18 @@ export default function SplashScreen({ navigation }) {
                         <View style={styles.iconCircle}>
                             <Ionicons name="arrow-forward" size={20} color="#2e7d32" />
                         </View>
-                        <CustomText style={styles.primaryText}>Get Started</CustomText>
+                        <CustomText style={styles.primaryText}>{t('common.getStarted')}</CustomText>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.primaryBtnLang}
                         activeOpacity={0.8}
-                        onPress={() => navigation.navigate('ChooseLanguage')}
+                        onPress={() => navigation.navigate('ChooseLanguage', { nextScreen: 'Login' })}
                     >
                         <View style={styles.iconCircle}>
                             <Ionicons name="globe-outline" size={20} color={color.ORANGE}/>
                         </View>
-                        <CustomText style={styles.primaryText}>Choose Language</CustomText>
+                        <CustomText style={styles.primaryText}>{t('common.chooseLanguage')}</CustomText>
                     </TouchableOpacity>
 
                 </View>

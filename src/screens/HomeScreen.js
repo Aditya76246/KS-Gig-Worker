@@ -16,6 +16,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useTranslation } from "../localization/i18n";
 
 const worker = {
   name: "Aditya Soni",
@@ -133,6 +134,7 @@ const farmCarouselItems = [
 
 export default function HomeScreen({ navigation }) {
   const insets = useSafeAreaInsets();
+  const { tx } = useTranslation();
   const { width } = useWindowDimensions();
   const scrollY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
@@ -191,11 +193,11 @@ export default function HomeScreen({ navigation }) {
 
   const summary = useMemo(
     () => [
-      { label: "Confirmed", value: "Rs 12,480", icon: "checkmark-circle" },
-      { label: "Pending", value: "Rs 1,970", icon: "time" },
-      { label: "Withdrawn", value: "Rs 8,200", icon: "card" },
+      { label: tx("Confirmed"), value: "Rs 12,480", icon: "checkmark-circle" },
+      { label: tx("Pending"), value: "Rs 1,970", icon: "time" },
+      { label: tx("Withdrawn"), value: "Rs 8,200", icon: "card" },
     ],
-    []
+    [tx]
   );
 
   const stickyOpacity = scrollY.interpolate({
@@ -253,7 +255,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.stickyMetaRow}>
                 <View style={styles.stickyMiniPill}>
                   <Ionicons name="briefcase" size={11} color="#DCFCE7" />
-                  <Text style={styles.stickyMiniText}>3 live jobs</Text>
+                  <Text style={styles.stickyMiniText}>{tx("3 live jobs")}</Text>
                 </View>
                 <View style={styles.stickyMiniPill}>
                   <Ionicons name="star" size={11} color="#FCD34D" />
@@ -262,7 +264,7 @@ export default function HomeScreen({ navigation }) {
               </View>
             </View>
           </View>
-          <DutySwitch dutyOn={dutyOn} onPress={() => setDutyOn((value) => !value)} compact />
+          <DutySwitch dutyOn={dutyOn} onPress={() => setDutyOn((value) => !value)} compact tx={tx} />
         </LinearGradient>
       </Animated.View>
 
@@ -321,7 +323,7 @@ export default function HomeScreen({ navigation }) {
                 />
                 <View style={styles.brandCopy}>
                   <Text style={styles.brand}>KisanSahakar</Text>
-                  <Text style={styles.brandSub}>Gig Worker App</Text>
+                  <Text style={styles.brandSub}>{tx("Gig Worker App")}</Text>
                 </View>
               </View>
 
@@ -332,14 +334,14 @@ export default function HomeScreen({ navigation }) {
                     <Text style={styles.badgeText}>2</Text>
                   </View>
                 </Pressable>
-                <DutySwitch dutyOn={dutyOn} onPress={() => setDutyOn((value) => !value)} />
+                <DutySwitch dutyOn={dutyOn} onPress={() => setDutyOn((value) => !value)} tx={tx} />
               </View>
             </View>
 
             <Pressable style={styles.locationPill}>
               <Ionicons name="location-sharp" size={13} color="#FBBF24" />
               <Text style={styles.locationText} numberOfLines={1}>
-                Near {worker.location}
+                {tx("Near {{location}}", { location: worker.location })}
               </Text>
               <Ionicons name="chevron-down" size={12} color="rgba(255,255,255,0.66)" />
             </Pressable>
@@ -415,11 +417,11 @@ export default function HomeScreen({ navigation }) {
                   colors={["rgba(0,0,0,0.08)", "rgba(7,45,25,0.74)"]}
                   style={styles.farmOverlay}
                 >
-                  <Text style={styles.farmTitle}>{cluster.title}</Text>
-                  <Text style={styles.farmCopy}>{cluster.copy}</Text>
+                  <Text style={styles.farmTitle}>{tx(cluster.title)}</Text>
+                  <Text style={styles.farmCopy}>{tx(cluster.copy)}</Text>
                   <View style={styles.farmChips}>
                     {cluster.chips.map((chip) => (
-                      <Text key={chip} style={styles.farmChip}>{chip}</Text>
+                      <Text key={chip} style={styles.farmChip}>{tx(chip)}</Text>
                     ))}
                   </View>
                 </LinearGradient>
@@ -439,17 +441,17 @@ export default function HomeScreen({ navigation }) {
 
           <View style={styles.sectionHeader}>
             <View>
-              <Text style={styles.sectionTitle}>Nearby job alerts</Text>
-              <Text style={styles.sectionSubtitle}>Accept quickly before the slot closes</Text>
+              <Text style={styles.sectionTitle}>{tx("Nearby job alerts")}</Text>
+              <Text style={styles.sectionSubtitle}>{tx("Accept quickly before the slot closes")}</Text>
             </View>
             <View style={styles.livePill}>
               <View style={styles.liveDot} />
-              <Text style={styles.liveText}>Live</Text>
+              <Text style={styles.liveText}>{tx("Live")}</Text>
             </View>
           </View>
 
           {jobs.map((job) => (
-            <JobCard key={job.id} job={job} navigation={navigation} />
+            <JobCard key={job.id} job={job} navigation={navigation} tx={tx} />
           ))}
         </View>
       </Animated.ScrollView>
@@ -457,7 +459,7 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
-function DutySwitch({ dutyOn, onPress, compact = false }) {
+function DutySwitch({ dutyOn, onPress, compact = false, tx = (text) => text }) {
   return (
     <Pressable
       onPress={onPress}
@@ -467,7 +469,7 @@ function DutySwitch({ dutyOn, onPress, compact = false }) {
     >
       {!compact && (
         <Text style={[styles.dutyText, dutyOn && styles.dutyTextActive]}>
-          {dutyOn ? "ONLINE" : "OFFLINE"}
+          {dutyOn ? tx("ONLINE") : tx("OFFLINE")}
         </Text>
       )}
       <View style={[styles.switchTrack, dutyOn && styles.switchTrackActive]}>
@@ -489,7 +491,7 @@ function HeroMetric({ label, value, icon }) {
   );
 }
 
-function JobCard({ job, navigation }) {
+function JobCard({ job, navigation, tx }) {
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -500,23 +502,23 @@ function JobCard({ job, navigation }) {
       <View style={styles.jobBody}>
         <View style={styles.jobHeader}>
           <View style={styles.jobTitleWrap}>
-            <Text style={styles.jobType}>{job.type}</Text>
-            <Text style={styles.jobMeta}>{job.crop} - {job.village} - {job.distance}</Text>
+            <Text style={styles.jobType}>{tx(job.type)}</Text>
+            <Text style={styles.jobMeta}>{tx(job.crop)} - {tx(job.village)} - {tx(job.distance)}</Text>
           </View>
           <Text style={styles.jobPay}>{job.pay}</Text>
         </View>
 
         <View style={styles.jobInfoRow}>
-          <InfoPill icon="time-outline" label={job.time} />
-          <InfoPill icon="people-outline" label={job.workers} />
+          <InfoPill icon="time-outline" label={tx(job.time)} />
+          <InfoPill icon="people-outline" label={tx(job.workers)} />
         </View>
 
         <View style={styles.jobFooter}>
           <View style={styles.ratingPill}>
             <Ionicons name="star" size={13} color="#F59E0B" />
-            <Text style={styles.rating}>Farmer {job.rating}</Text>
+            <Text style={styles.rating}>{tx("Farmer {{rating}}", { rating: job.rating })}</Text>
           </View>
-          <Text style={styles.viewDetails}>View details</Text>
+          <Text style={styles.viewDetails}>{tx("View details")}</Text>
         </View>
       </View>
     </TouchableOpacity>

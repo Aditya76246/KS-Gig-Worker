@@ -14,6 +14,7 @@ import CustomText from '../components/CustomText';
 import InnerScreenHeader from '../components/InnerScreenHeader';
 import globalStyles from '../styles/globalStyles';
 import { color } from '../styles/theme';
+import { useTranslation } from '../localization/i18n';
 
 // ─── Document config ──────────────────────────────────────────────────────────
 const DOCUMENTS = [
@@ -47,7 +48,7 @@ const DOCUMENTS = [
 ];
 
 // ─── Upload button ────────────────────────────────────────────────────────────
-function UploadSlot({ label, file, onCamera, onGallery, onRemove }) {
+function UploadSlot({ label, file, onCamera, onGallery, onRemove, tx }) {
   return (
     <View style={styles.slotWrapper}>
       <CustomText style={styles.slotLabel}>{label}</CustomText>
@@ -72,12 +73,12 @@ function UploadSlot({ label, file, onCamera, onGallery, onRemove }) {
         <View style={styles.slotEmpty}>
           <TouchableOpacity style={styles.slotBtn} onPress={onCamera} activeOpacity={0.75}>
             <Ionicons name="camera-outline" size={22} color={color.TEXT_SUB} />
-            <CustomText style={styles.slotBtnText}>Camera</CustomText>
+            <CustomText style={styles.slotBtnText}>{tx('Camera')}</CustomText>
           </TouchableOpacity>
           <View style={styles.slotDivider} />
           <TouchableOpacity style={styles.slotBtn} onPress={onGallery} activeOpacity={0.75}>
             <Ionicons name="images-outline" size={22} color={color.TEXT_SUB} />
-            <CustomText style={styles.slotBtnText}>Gallery</CustomText>
+            <CustomText style={styles.slotBtnText}>{tx('Gallery')}</CustomText>
           </TouchableOpacity>
         </View>
       )}
@@ -86,7 +87,7 @@ function UploadSlot({ label, file, onCamera, onGallery, onRemove }) {
 }
 
 // ─── Document Card ────────────────────────────────────────────────────────────
-function DocCard({ doc, uploads, onUpload, onRemove, delay }) {
+function DocCard({ doc, uploads, onUpload, onRemove, delay, tx }) {
   const uploadedCount = doc.sides.filter((_, i) => uploads[`${doc.id}_${i}`]).length;
   const allUploaded   = uploadedCount === doc.sides.length;
 
@@ -100,14 +101,14 @@ function DocCard({ doc, uploads, onUpload, onRemove, delay }) {
 
         <View style={styles.docCardInfo}>
           <View style={styles.docCardTitleRow}>
-            <CustomText style={styles.docCardTitle}>{doc.title}</CustomText>
+            <CustomText style={styles.docCardTitle}>{tx(doc.title)}</CustomText>
             {doc.required && (
               <View style={styles.requiredBadge}>
-                <CustomText style={styles.requiredBadgeText}>Required</CustomText>
+                <CustomText style={styles.requiredBadgeText}>{tx('Required')}</CustomText>
               </View>
             )}
           </View>
-          <CustomText style={styles.docCardSubtitle}>{doc.subtitle}</CustomText>
+          <CustomText style={styles.docCardSubtitle}>{tx(doc.subtitle)}</CustomText>
         </View>
 
         {/* Status badge */}
@@ -125,7 +126,7 @@ function DocCard({ doc, uploads, onUpload, onRemove, delay }) {
       {/* Tip row */}
       <View style={styles.tipRow}>
         <Ionicons name="information-circle-outline" size={14} color={color.TEXT_MUTED} />
-        <CustomText style={styles.tipText}>{doc.tips}</CustomText>
+        <CustomText style={styles.tipText}>{tx(doc.tips)}</CustomText>
       </View>
 
       {/* Upload slots */}
@@ -135,11 +136,12 @@ function DocCard({ doc, uploads, onUpload, onRemove, delay }) {
           return (
             <UploadSlot
               key={key}
-              label={sideLabel}
+              label={tx(sideLabel)}
               file={uploads[key] || null}
               onCamera={() => onUpload(key, { name: `${doc.id}_${sideLabel.toLowerCase().replace(' ', '_')}.jpg`, size: '1.2 MB' })}
               onGallery={() => onUpload(key, { name: `${doc.id}_${sideLabel.toLowerCase().replace(' ', '_')}.jpg`, size: '890 KB' })}
               onRemove={() => onRemove(key)}
+              tx={tx}
             />
           );
         })}
@@ -149,7 +151,7 @@ function DocCard({ doc, uploads, onUpload, onRemove, delay }) {
 }
 
 // ─── Progress summary bar ─────────────────────────────────────────────────────
-function UploadProgress({ uploads }) {
+function UploadProgress({ uploads, tx }) {
   const totalSlots    = DOCUMENTS.reduce((acc, d) => acc + d.sides.length, 0);
   const uploadedSlots = Object.keys(uploads).length;
   const pct           = Math.round((uploadedSlots / totalSlots) * 100);
@@ -160,10 +162,10 @@ function UploadProgress({ uploads }) {
       <View style={styles.progressTopRow}>
         <View style={styles.progressTextCol}>
           <CustomText style={styles.progressTitle}>
-            {allDone ? 'All documents uploaded!' : 'Upload Progress'}
+            {allDone ? tx('All documents uploaded!') : tx('Upload Progress')}
           </CustomText>
           <CustomText style={styles.progressSub}>
-            {uploadedSlots} of {totalSlots} files uploaded
+            {tx('{{uploaded}} of {{total}} files uploaded', { uploaded: uploadedSlots, total: totalSlots })}
           </CustomText>
         </View>
         <CustomText style={[styles.progressPct, allDone && styles.progressPctDone]}>
@@ -181,6 +183,7 @@ function UploadProgress({ uploads }) {
 export default function DocumentsScreen({ navigation }) {
   // uploads: { 'aadhaar_0': { name, size }, 'license_1': {...}, ... }
   const [uploads, setUploads] = useState({});
+  const { tx } = useTranslation();
 
   const handleUpload = (key, file) => setUploads((p) => ({ ...p, [key]: file }));
   const handleRemove = (key) => setUploads((p) => { const next = { ...p }; delete next[key]; return next; });
@@ -193,7 +196,7 @@ export default function DocumentsScreen({ navigation }) {
     <View style={styles.root}>
       <StatusBar style="dark" />
 
-      <InnerScreenHeader navigation={navigation} title="My Documents" />
+      <InnerScreenHeader navigation={navigation} title={tx('My Documents')} />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -202,30 +205,30 @@ export default function DocumentsScreen({ navigation }) {
       >
         {/* Page title */}
         <Animated.View entering={FadeInDown.delay(0).duration(350)} style={styles.titleBlock}>
-          <CustomText style={styles.pageTitle}>Upload Documents</CustomText>
+          <CustomText style={styles.pageTitle}>{tx('Upload Documents')}</CustomText>
           <CustomText style={styles.pageSubtitle}>
-            Verified documents help build trust with farmers and unlock more job opportunities.
+            {tx('Verified documents help build trust with farmers and unlock more job opportunities.')}
           </CustomText>
         </Animated.View>
 
         {/* Progress bar */}
         <Animated.View entering={FadeInDown.delay(60).duration(350)}>
-          <UploadProgress uploads={uploads} />
+          <UploadProgress uploads={uploads} tx={tx} />
         </Animated.View>
 
         {/* Guidelines banner */}
         <Animated.View entering={FadeInDown.delay(100).duration(350)} style={styles.guidelineBanner}>
           <View style={styles.guidelineRow}>
             <Ionicons name="checkmark-circle-outline" size={15} color={color.GREEN} />
-            <CustomText style={styles.guidelineText}>Photos must be clear and fully visible</CustomText>
+            <CustomText style={styles.guidelineText}>{tx('Photos must be clear and fully visible')}</CustomText>
           </View>
           <View style={styles.guidelineRow}>
             <Ionicons name="checkmark-circle-outline" size={15} color={color.GREEN} />
-            <CustomText style={styles.guidelineText}>Accepted formats: JPG, PNG, PDF (max 5 MB)</CustomText>
+            <CustomText style={styles.guidelineText}>{tx('Accepted formats: JPG, PNG, PDF (max 5 MB)')}</CustomText>
           </View>
           <View style={styles.guidelineRow}>
             <Ionicons name="checkmark-circle-outline" size={15} color={color.GREEN} />
-            <CustomText style={styles.guidelineText}>Documents must be valid and not expired</CustomText>
+            <CustomText style={styles.guidelineText}>{tx('Documents must be valid and not expired')}</CustomText>
           </View>
         </Animated.View>
 
@@ -238,6 +241,7 @@ export default function DocumentsScreen({ navigation }) {
             onUpload={handleUpload}
             onRemove={handleRemove}
             delay={140 + i * 60}
+            tx={tx}
           />
         ))}
 
@@ -245,7 +249,7 @@ export default function DocumentsScreen({ navigation }) {
         <Animated.View entering={FadeInDown.delay(360).duration(350)} style={styles.securityNote}>
           <MaterialCommunityIcons name="lock-outline" size={16} color={color.TEXT_MUTED} />
           <CustomText style={styles.securityNoteText}>
-            All documents are encrypted with AES-256 and stored securely. Only authorised verifiers can access them.
+            {tx('All documents are encrypted with AES-256 and stored securely. Only authorised verifiers can access them.')}
           </CustomText>
         </Animated.View>
 
@@ -260,7 +264,9 @@ export default function DocumentsScreen({ navigation }) {
           activeOpacity={canSubmit ? 0.85 : 1}
         >
           <CustomText style={styles.submitBtnText}>
-            {canSubmit ? 'Submit for Verification' : `Upload ${totalSlots - uploadedSlots} more file${totalSlots - uploadedSlots === 1 ? '' : 's'}`}
+            {canSubmit
+              ? tx('Submit for Verification')
+              : tx(totalSlots - uploadedSlots === 1 ? 'Upload {{count}} more file' : 'Upload {{count}} more files', { count: totalSlots - uploadedSlots })}
           </CustomText>
           <Ionicons
             name={canSubmit ? 'checkmark' : 'cloud-upload-outline'}
@@ -269,7 +275,7 @@ export default function DocumentsScreen({ navigation }) {
             style={{ marginLeft: 8 }}
           />
         </TouchableOpacity>
-        <CustomText style={styles.bottomNote}>Your data is encrypted and secure</CustomText>
+        <CustomText style={styles.bottomNote}>{tx('Your data is encrypted and secure')}</CustomText>
       </View>
     </View>
   );
