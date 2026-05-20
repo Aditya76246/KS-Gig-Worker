@@ -355,7 +355,7 @@ export default function HomeScreen({ navigation }) {
                   resizeMode="contain"
                 />
                 <View style={styles.brandCopy}>
-                  <Text style={styles.brand}>KisanSahakar</Text>
+                  <Text style={styles.brand}>Kisan Sahakar</Text>
                   <Text style={styles.brandSub}>{tx("Gig Worker App")}</Text>
                 </View>
               </View>
@@ -496,7 +496,7 @@ export default function HomeScreen({ navigation }) {
             ))}
           </ScrollView>
 
-            
+
           <View style={styles.sectionHeader}>
             <View>
               <Text style={styles.sectionTitle}>{tx("Nearby job alerts")}</Text>

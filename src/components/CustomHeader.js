@@ -250,7 +250,7 @@ export default function CustomHeader({
               resizeMode="contain"
             />
             <View style={styles.brandCopy}>
-              <CustomText style={styles.brand}>KisanSahakar</CustomText>
+              <CustomText style={styles.brand}>Kisan Sahakar</CustomText>
               <CustomText style={styles.brandSub}>{tx('Gig Worker App')}</CustomText>
             </View>
           </View>

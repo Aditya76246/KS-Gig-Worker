@@ -46,7 +46,7 @@ const KycSetupScreen = ({ navigation }) => {
               resizeMode="contain"
             />
             <View>
-              <Text style={styles.brandTitle}>KisanSahakar</Text>
+              <Text style={styles.brandTitle}>Kisan Sahakar</Text>
               <Text style={styles.brandSubTitle}>{tx("KYC Setup")}</Text>
             </View>
           </View>
