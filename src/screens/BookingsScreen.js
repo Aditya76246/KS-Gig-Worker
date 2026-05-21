@@ -107,7 +107,7 @@ function DetailRow({ icon, text, tx }) {
 
 function BookingCard({ booking, onAccept, onReject, onViewDetails, delay, tx }) {
   const isNew = booking.status === 'new';
-  
+
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(400)} style={styles.card}>
       {/* Card Header */}
@@ -166,10 +166,10 @@ function BookingCard({ booking, onAccept, onReject, onViewDetails, delay, tx }) 
 
         {booking.status === 'ongoing' && (
           <TouchableOpacity style={styles.trackBtn} onPress={() => onViewDetails(booking)}>
-             <LinearGradient colors={['#0369A1', '#075985']} style={styles.btnGradient}>
-                <Ionicons name="navigate" size={16} color="#FFF" />
-                <CustomText style={styles.btnText}>{tx('Track Job')}</CustomText>
-              </LinearGradient>
+            <LinearGradient colors={['#0369A1', '#075985']} style={styles.btnGradient}>
+              <Ionicons name="navigate" size={16} color="#FFF" />
+              <CustomText style={styles.btnText}>{tx('Track Job')}</CustomText>
+            </LinearGradient>
           </TouchableOpacity>
         )}
 

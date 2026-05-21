@@ -219,37 +219,37 @@ export default function HomeScreen({ navigation }) {
   });
 
   function RunningJobCard({ job, navigation, tx }) {
-  const { width } = useWindowDimensions();
-  const cardWidth = width * 0.78; // 78% of screen width
+    const { width } = useWindowDimensions();
+    const cardWidth = width * 0.78; // 78% of screen width
 
-  return (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      style={[styles.runningCard, { width: cardWidth }]}
-      onPress={() => navigation.navigate("JobDetails", { job })}
-    >
-      <View style={styles.runningImageWrapper}>
-        <Image source={job.image} style={styles.runningImage} resizeMode="cover" />
-        <View style={styles.runningStatusTag}>
-          <Text style={styles.runningStatusText}>{tx("ONGOING")}</Text>
-        </View>
-      </View>
-      
-      <View style={styles.runningBody}>
-        <Text style={styles.runningType} numberOfLines={1}>{tx(job.type)}</Text>
-        <Text style={styles.runningMeta} numberOfLines={1}>{tx(job.crop)} • {tx(job.village)}</Text>
-        
-        <View style={styles.runningFooter}>
-          <Text style={styles.runningPay}>{job.pay}</Text>
-          <View style={styles.trackBtn}>
-            <Ionicons name="navigate-circle" size={18} color="#15803D" />
-            <Text style={styles.trackText}>{tx("Track")}</Text>
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={[styles.runningCard, { width: cardWidth }]}
+        onPress={() => navigation.navigate("JobDetails", { job })}
+      >
+        <View style={styles.runningImageWrapper}>
+          <Image source={job.image} style={styles.runningImage} resizeMode="cover" />
+          <View style={styles.runningStatusTag}>
+            <Text style={styles.runningStatusText}>{tx("ONGOING")}</Text>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
-}
+
+        <View style={styles.runningBody}>
+          <Text style={styles.runningType} numberOfLines={1}>{tx(job.type)}</Text>
+          <Text style={styles.runningMeta} numberOfLines={1}>{tx(job.crop)} • {tx(job.village)}</Text>
+
+          <View style={styles.runningFooter}>
+            <Text style={styles.runningPay}>{job.pay}</Text>
+            <View style={styles.trackBtn}>
+              <Ionicons name="navigate-circle" size={18} color="#15803D" />
+              <Text style={styles.trackText}>{tx("Track")}</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <View style={styles.screen}>
@@ -511,7 +511,7 @@ export default function HomeScreen({ navigation }) {
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} navigation={navigation} tx={tx} />
           ))}
-         
+
         </View>
       </Animated.ScrollView>
     </View>

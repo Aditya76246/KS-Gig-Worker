@@ -308,9 +308,9 @@ import { color } from "../styles/theme";
 import { useTranslation } from "../localization/i18n";
 
 const { width: W, height: H } = Dimensions.get("window");
-const GREEN        = "#2e7d32";
-const ORANGE       = "#e07b00";
-const LIGHT_GREEN  = "#e8f5e9";
+const GREEN = "#2e7d32";
+const ORANGE = "#e07b00";
+const LIGHT_GREEN = "#e8f5e9";
 const LIGHT_ORANGE = "#fff3e0";
 
 /* ── Decorative background SVG ──────────────────────────── */
@@ -318,42 +318,42 @@ const BgDecor = () => (
   <Svg width={W} height={260} style={{ position: "absolute", top: 0, left: 0 }}>
     <Defs>
       <LinearGradient id="topGrad" x1="0" y1="0" x2="0" y2="1">
-        <Stop offset="0%"   stopColor={LIGHT_GREEN} stopOpacity="1" />
-        <Stop offset="100%" stopColor="#ffffff"      stopOpacity="1" />
+        <Stop offset="0%" stopColor={LIGHT_GREEN} stopOpacity="1" />
+        <Stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
       </LinearGradient>
     </Defs>
     {/* Soft green wash */}
-    <Path d={`M0,0 L${W},0 L${W},200 Q${W*0.5},260 0,200 Z`} fill="url(#topGrad)" />
+    <Path d={`M0,0 L${W},0 L${W},200 Q${W * 0.5},260 0,200 Z`} fill="url(#topGrad)" />
 
     {/* Rings — top right */}
-    <Circle cx={W - 30} cy={40}  r={80}  stroke={GREEN}  strokeWidth="1" fill="none" opacity="0.08" />
-    <Circle cx={W - 30} cy={40}  r={56}  stroke={GREEN}  strokeWidth="1" fill="none" opacity="0.1"  />
-    <Circle cx={W - 30} cy={40}  r={34}  stroke={ORANGE} strokeWidth="1" fill="none" opacity="0.1"  />
+    <Circle cx={W - 30} cy={40} r={80} stroke={GREEN} strokeWidth="1" fill="none" opacity="0.08" />
+    <Circle cx={W - 30} cy={40} r={56} stroke={GREEN} strokeWidth="1" fill="none" opacity="0.1" />
+    <Circle cx={W - 30} cy={40} r={34} stroke={ORANGE} strokeWidth="1" fill="none" opacity="0.1" />
 
     {/* Rings — bottom left */}
-    <Circle cx={35}     cy={210} r={55}  stroke={GREEN}  strokeWidth="1" fill="none" opacity="0.07" />
-    <Circle cx={35}     cy={210} r={35}  stroke={GREEN}  strokeWidth="1" fill="none" opacity="0.08" />
+    <Circle cx={35} cy={210} r={55} stroke={GREEN} strokeWidth="1" fill="none" opacity="0.07" />
+    <Circle cx={35} cy={210} r={35} stroke={GREEN} strokeWidth="1" fill="none" opacity="0.08" />
 
     {/* Dot grid top-left */}
-    {[0,1,2,3].map(i => [0,1,2].map(j => (
+    {[0, 1, 2, 3].map(i => [0, 1, 2].map(j => (
       <Circle key={`d${i}${j}`}
-        cx={22 + i*18} cy={22 + j*18}
-        r={2} fill={GREEN} opacity={0.09 + i*0.01}
+        cx={22 + i * 18} cy={22 + j * 18}
+        r={2} fill={GREEN} opacity={0.09 + i * 0.01}
       />
     )))}
 
     {/* Dot grid top-right area */}
-    {[0,1,2].map(i => [0,1,2,3].map(j => (
+    {[0, 1, 2].map(i => [0, 1, 2, 3].map(j => (
       <Circle key={`e${i}${j}`}
-        cx={W*0.72 + i*16} cy={8 + j*16}
+        cx={W * 0.72 + i * 16} cy={8 + j * 16}
         r={1.8} fill={ORANGE} opacity={0.1}
       />
     )))}
 
     {/* Leaf accent */}
-    <Path d={`M${W*0.06},${170} Q${W*0.1},${155} ${W*0.15},${165} Q${W*0.1},${178} ${W*0.06},${170} Z`}
+    <Path d={`M${W * 0.06},${170} Q${W * 0.1},${155} ${W * 0.15},${165} Q${W * 0.1},${178} ${W * 0.06},${170} Z`}
       fill={GREEN} opacity="0.14" />
-    <Path d={`M${W*0.87},${80} Q${W*0.92},${70} ${W*0.97},${80} Q${W*0.92},${90} ${W*0.87},${80} Z`}
+    <Path d={`M${W * 0.87},${80} Q${W * 0.92},${70} ${W * 0.97},${80} Q${W * 0.92},${90} ${W * 0.87},${80} Z`}
       fill={ORANGE} opacity="0.18" />
   </Svg>
 );
@@ -411,7 +411,7 @@ const LangCard = ({ item, isSelected, onPress, index, fadeAnim }) => {
 /* ── Main Screen ─────────────────────────────────────────── */
 export default function ChooseLanguage() {
   const navigation = useNavigation();
-  const route      = useRoute();
+  const route = useRoute();
   const { language, setLanguage, t, languageOptions } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState(language);
 
@@ -422,10 +422,10 @@ export default function ChooseLanguage() {
 
   // Card slide up
   const cardSlide = useRef(new Animated.Value(50)).current;
-  const cardOp    = useRef(new Animated.Value(0)).current;
+  const cardOp = useRef(new Animated.Value(0)).current;
   // Header fade
-  const headerOp  = useRef(new Animated.Value(0)).current;
-  const headerY   = useRef(new Animated.Value(20)).current;
+  const headerOp = useRef(new Animated.Value(0)).current;
+  const headerY = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     // Header
@@ -436,7 +436,7 @@ export default function ChooseLanguage() {
 
     // Cards stagger
     Animated.parallel([
-      Animated.timing(cardOp,    { toValue: 1, duration: 500, delay: 200, useNativeDriver: true }),
+      Animated.timing(cardOp, { toValue: 1, duration: 500, delay: 200, useNativeDriver: true }),
       Animated.timing(cardSlide, { toValue: 0, duration: 500, delay: 200, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
     ]).start();
 

@@ -36,12 +36,12 @@ import { color } from '../styles/theme';
 import { useTranslation } from '../localization/i18n';
 
 const { width: W, height: H } = Dimensions.get('window');
-const GREEN  = '#2e7d32';
+const GREEN = '#2e7d32';
 const ORANGE = '#e07b00';
-const LIGHT_GREEN  = '#e8f5e9';
+const LIGHT_GREEN = '#e8f5e9';
 const LIGHT_ORANGE = '#fff3e0';
 const SURFACE = '#f7faf7';
-const BORDER  = '#c8e6c9';
+const BORDER = '#c8e6c9';
 
 /* ── Decorative top illustration ────────────────────────── */
 const TopIllustration = () => (
@@ -49,11 +49,11 @@ const TopIllustration = () => (
     style={{ position: 'absolute', top: 0 }}>
     <Defs>
       <LinearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
-        <Stop offset="0%"   stopColor="#e8f5e9" />
+        <Stop offset="0%" stopColor="#e8f5e9" />
         <Stop offset="100%" stopColor="#ffffff" />
       </LinearGradient>
       <LinearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1">
-        <Stop offset="0%"   stopColor={GREEN}  stopOpacity="0.12" />
+        <Stop offset="0%" stopColor={GREEN} stopOpacity="0.12" />
         <Stop offset="100%" stopColor={ORANGE} stopOpacity="0.06" />
       </LinearGradient>
     </Defs>
@@ -74,15 +74,15 @@ const TopIllustration = () => (
     <Circle cx={W * 0.88} cy={H * 0.18} r="46" stroke={ORANGE} strokeWidth="1" fill="none" opacity="0.08" />
 
     {/* Floating dots top left */}
-    {[0,1,2,3].map(i => [0,1,2,3].map(j => (
+    {[0, 1, 2, 3].map(i => [0, 1, 2, 3].map(j => (
       <Circle key={`${i}-${j}`}
         cx={W * 0.04 + i * 18} cy={H * 0.03 + j * 18}
-        r={2} fill={GREEN} opacity={0.1 + i*0.02}
+        r={2} fill={GREEN} opacity={0.1 + i * 0.02}
       />
     )))}
 
     {/* Floating dots top right */}
-    {[0,1,2].map(i => [0,1,2].map(j => (
+    {[0, 1, 2].map(i => [0, 1, 2].map(j => (
       <Circle key={`r${i}-${j}`}
         cx={W * 0.78 + i * 16} cy={H * 0.01 + j * 16}
         r={1.8} fill={ORANGE} opacity={0.12}
@@ -90,9 +90,9 @@ const TopIllustration = () => (
     )))}
 
     {/* Leaf accent shapes */}
-    <Path d={`M${W*0.05},${H*0.22} Q${W*0.08},${H*0.16} ${W*0.13},${H*0.2} Q${W*0.08},${H*0.24} ${W*0.05},${H*0.22} Z`}
+    <Path d={`M${W * 0.05},${H * 0.22} Q${W * 0.08},${H * 0.16} ${W * 0.13},${H * 0.2} Q${W * 0.08},${H * 0.24} ${W * 0.05},${H * 0.22} Z`}
       fill={GREEN} opacity="0.15" />
-    <Path d={`M${W*0.86},${H*0.06} Q${W*0.9},${H*0.02} ${W*0.94},${H*0.06} Q${W*0.9},${H*0.1} ${W*0.86},${H*0.06} Z`}
+    <Path d={`M${W * 0.86},${H * 0.06} Q${W * 0.9},${H * 0.02} ${W * 0.94},${H * 0.06} Q${W * 0.9},${H * 0.1} ${W * 0.86},${H * 0.06} Z`}
       fill={ORANGE} opacity="0.18" />
   </Svg>
 );
@@ -165,20 +165,20 @@ export default function LoginScreen() {
   const navigation = useNavigation();
   const { tx } = useTranslation();
 
-  const [showOtp, setShowOtp]     = useState(false);
-  const [mobile, setMobile]       = useState('');
-  const [otp, setOtp]             = useState('');
-  const [timer, setTimer]         = useState(0);
+  const [showOtp, setShowOtp] = useState(false);
+  const [mobile, setMobile] = useState('');
+  const [otp, setOtp] = useState('');
+  const [timer, setTimer] = useState(0);
   const [canResend, setCanResend] = useState(false);
   const [mobileError, setMobileError] = useState('');
 
-  const otpRef    = useRef(null);
+  const otpRef = useRef(null);
   const cardSlide = useSharedValue(400);
-  const cardOp    = useSharedValue(0);
+  const cardOp = useSharedValue(0);
 
   useEffect(() => {
     cardSlide.value = withSpring(0, { damping: 18, stiffness: 120 });
-    cardOp.value    = withTiming(1, { duration: 600 });
+    cardOp.value = withTiming(1, { duration: 600 });
   }, []);
 
   const cardStyle = useAnimatedStyle(() => ({
@@ -234,9 +234,9 @@ export default function LoginScreen() {
         onPress={() => otpRef.current?.focus()}
         style={styles.otpRow}
       >
-        {[0,1,2,3,4,5].map((_, i) => {
-          const isActive  = i === otp.length;
-          const isFilled  = i < otp.length;
+        {[0, 1, 2, 3, 4, 5].map((_, i) => {
+          const isActive = i === otp.length;
+          const isFilled = i < otp.length;
           return (
             <View key={i} style={[
               styles.otpBox,
@@ -286,9 +286,9 @@ export default function LoginScreen() {
 
         {/* Stat chips */}
         <View style={styles.statsRow}>
-          <StatChip icon="people-outline"   label="Gig Workers"  value="50K+"  color={GREEN}  />
-          <StatChip icon="construct-outline" label="Equipment"    value="200+"  color={ORANGE} />
-          <StatChip icon="location-outline" label="Districts"    value="120+"  color={GREEN}  />
+          <StatChip icon="people-outline" label="Gig Workers" value="50K+" color={GREEN} />
+          <StatChip icon="construct-outline" label="Equipment" value="200+" color={ORANGE} />
+          <StatChip icon="location-outline" label="Districts" value="120+" color={GREEN} />
         </View>
       </Animated.View>
 

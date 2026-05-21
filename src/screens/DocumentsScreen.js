@@ -89,7 +89,7 @@ function UploadSlot({ label, file, onCamera, onGallery, onRemove, tx }) {
 // ─── Document Card ────────────────────────────────────────────────────────────
 function DocCard({ doc, uploads, onUpload, onRemove, delay, tx }) {
   const uploadedCount = doc.sides.filter((_, i) => uploads[`${doc.id}_${i}`]).length;
-  const allUploaded   = uploadedCount === doc.sides.length;
+  const allUploaded = uploadedCount === doc.sides.length;
 
   return (
     <Animated.View entering={FadeInDown.delay(delay).duration(380)} style={styles.docCard}>
@@ -152,10 +152,10 @@ function DocCard({ doc, uploads, onUpload, onRemove, delay, tx }) {
 
 // ─── Progress summary bar ─────────────────────────────────────────────────────
 function UploadProgress({ uploads, tx }) {
-  const totalSlots    = DOCUMENTS.reduce((acc, d) => acc + d.sides.length, 0);
+  const totalSlots = DOCUMENTS.reduce((acc, d) => acc + d.sides.length, 0);
   const uploadedSlots = Object.keys(uploads).length;
-  const pct           = Math.round((uploadedSlots / totalSlots) * 100);
-  const allDone       = uploadedSlots === totalSlots;
+  const pct = Math.round((uploadedSlots / totalSlots) * 100);
+  const allDone = uploadedSlots === totalSlots;
 
   return (
     <View style={styles.progressCard}>
@@ -188,9 +188,9 @@ export default function DocumentsScreen({ navigation }) {
   const handleUpload = (key, file) => setUploads((p) => ({ ...p, [key]: file }));
   const handleRemove = (key) => setUploads((p) => { const next = { ...p }; delete next[key]; return next; });
 
-  const totalSlots    = DOCUMENTS.reduce((acc, d) => acc + d.sides.length, 0);
+  const totalSlots = DOCUMENTS.reduce((acc, d) => acc + d.sides.length, 0);
   const uploadedSlots = Object.keys(uploads).length;
-  const canSubmit     = uploadedSlots === totalSlots;
+  const canSubmit = uploadedSlots === totalSlots;
 
   return (
     <View style={styles.root}>
@@ -260,7 +260,7 @@ export default function DocumentsScreen({ navigation }) {
       <View style={styles.bottomBar}>
         <TouchableOpacity
           style={[styles.submitBtn, !canSubmit && styles.submitBtnDisabled]}
-          onPress={() => {}}
+          onPress={() => { }}
           activeOpacity={canSubmit ? 0.85 : 1}
         >
           <CustomText style={styles.submitBtnText}>
@@ -283,13 +283,13 @@ export default function DocumentsScreen({ navigation }) {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root:          { flex: 1, backgroundColor: color.SURFACE },
+  root: { flex: 1, backgroundColor: color.SURFACE },
   scrollContent: { paddingHorizontal: 16, paddingBottom: 20, gap: 16 },
 
   // ── Title ──────────────────────────────────────────────────────────────────
-  titleBlock:   { gap: 6 },
-  pageTitle:    { ...globalStyles.f16Bold,    color: color.TEXT_MAIN, lineHeight: 28 },
-  pageSubtitle: { ...globalStyles.f12Regular, color: color.TEXT_SUB,  lineHeight: 20 },
+  titleBlock: { gap: 6 },
+  pageTitle: { ...globalStyles.f16Bold, color: color.TEXT_MAIN, lineHeight: 28 },
+  pageSubtitle: { ...globalStyles.f12Regular, color: color.TEXT_SUB, lineHeight: 20 },
 
   // ── Progress Card ──────────────────────────────────────────────────────────
   progressCard: {
@@ -299,17 +299,17 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05, shadowRadius: 8, elevation: 2,
   },
-  progressTopRow:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  progressTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   progressTextCol: { gap: 2 },
-  progressTitle:   { ...globalStyles.f14Bold,    color: color.TEXT_MAIN },
-  progressSub:     { ...globalStyles.f12Regular, color: color.TEXT_SUB  },
-  progressPct:     { ...globalStyles.f16Bold,    color: color.TEXT_MUTED },
+  progressTitle: { ...globalStyles.f14Bold, color: color.TEXT_MAIN },
+  progressSub: { ...globalStyles.f12Regular, color: color.TEXT_SUB },
+  progressPct: { ...globalStyles.f16Bold, color: color.TEXT_MUTED },
   progressPctDone: { color: color.GREEN },
   progressTrack: {
     height: 8, borderRadius: 99,
     backgroundColor: color.AVATAR_BG, overflow: 'hidden',
   },
-  progressFill:     { height: '100%', borderRadius: 99, backgroundColor: color.GREEN },
+  progressFill: { height: '100%', borderRadius: 99, backgroundColor: color.GREEN },
   progressFillDone: { backgroundColor: color.GREEN },
 
   // ── Guidelines banner ──────────────────────────────────────────────────────
@@ -329,16 +329,16 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
   },
-  docCardHeader:   { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
+  docCardHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   docIconBox: {
     width: 48, height: 48, borderRadius: 14,
     backgroundColor: color.GREEN_BG,
     justifyContent: 'center', alignItems: 'center', flexShrink: 0,
   },
-  docCardInfo:     { flex: 1, gap: 3 },
+  docCardInfo: { flex: 1, gap: 3 },
   docCardTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
-  docCardTitle:    { ...globalStyles.f14Bold,    color: color.TEXT_MAIN },
-  docCardSubtitle: { ...globalStyles.f12Regular, color: color.TEXT_SUB  },
+  docCardTitle: { ...globalStyles.f14Bold, color: color.TEXT_MAIN },
+  docCardSubtitle: { ...globalStyles.f12Regular, color: color.TEXT_SUB },
   requiredBadge: {
     backgroundColor: '#fff3e0',
     borderRadius: 30, paddingHorizontal: 8, paddingVertical: 2,
@@ -370,8 +370,8 @@ const styles = StyleSheet.create({
 
   // ── Slots container ────────────────────────────────────────────────────────
   slotsContainer: { gap: 12 },
-  slotWrapper:    { gap: 6 },
-  slotLabel:      { ...globalStyles.f12Bold, color: color.TEXT_MAIN },
+  slotWrapper: { gap: 6 },
+  slotLabel: { ...globalStyles.f12Bold, color: color.TEXT_MAIN },
 
   // ── Empty slot ─────────────────────────────────────────────────────────────
   slotEmpty: {
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.WHITE,
     justifyContent: 'center', alignItems: 'center',
   },
-  slotFileName: { ...globalStyles.f12Bold,    color: color.GREEN,      flex: 1 },
+  slotFileName: { ...globalStyles.f12Bold, color: color.GREEN, flex: 1 },
   slotFileSize: { ...globalStyles.f10Regular, color: color.TEXT_MUTED, marginTop: 2 },
 
   // ── Security note ──────────────────────────────────────────────────────────
@@ -421,6 +421,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.GREEN, borderRadius: 99, paddingVertical: 16,
   },
   submitBtnDisabled: { backgroundColor: color.AVATAR_BG },
-  submitBtnText:     { ...globalStyles.f14Bold,    color: color.WHITE       },
-  bottomNote:        { ...globalStyles.f12Regular, color: color.TEXT_MUTED, textAlign: 'center' },
+  submitBtnText: { ...globalStyles.f14Bold, color: color.WHITE },
+  bottomNote: { ...globalStyles.f12Regular, color: color.TEXT_MUTED, textAlign: 'center' },
 });

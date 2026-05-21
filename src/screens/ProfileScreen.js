@@ -611,7 +611,7 @@ export default function ProfileScreen({ navigation }) {
         <Animated.View entering={FadeInDown.delay(50).duration(400)} style={styles.profileFloatingCard}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatarCircle}>
-               <Ionicons name="person" size={40} color="#CBD5E1" />
+              <Ionicons name="person" size={40} color="#CBD5E1" />
             </View>
             <TouchableOpacity style={styles.cameraPill}>
               <Ionicons name="camera" size={12} color="#FFF" />
@@ -625,7 +625,7 @@ export default function ProfileScreen({ navigation }) {
               <CustomText style={styles.phoneText}>+91 98765 43210</CustomText>
             </View>
           </View>
-          
+
           <TouchableOpacity style={styles.editIconBtn} onPress={() => handleMenuPress('PersonalInfo')}>
             <Ionicons name="create-outline" size={20} color="#15803D" />
           </TouchableOpacity>

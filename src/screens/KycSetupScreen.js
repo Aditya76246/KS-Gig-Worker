@@ -59,8 +59,8 @@ const KycSetupScreen = ({ navigation }) => {
         </View>
       </LinearGradient>
 
-      <ScrollView 
-        showsVerticalScrollIndicator={false} 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 30 }]}
       >
         {/* --- USER WELCOME & PROGRESS SECTION (NOW OUTSIDE HEADER) --- */}
@@ -69,7 +69,7 @@ const KycSetupScreen = ({ navigation }) => {
             <Text style={styles.welcomeText}>{tx("Welcome, Aditya Soni")}</Text>
             <Text style={styles.welcomeSub}>{tx("75% of your profile is complete")}</Text>
           </View>
-          
+
           <View style={styles.progressContainer}>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: '75%' }]} />
@@ -87,10 +87,10 @@ const KycSetupScreen = ({ navigation }) => {
               style={[styles.segmentBtn, profileType === item && styles.segmentBtnActive]}
               onPress={() => setProfileType(item)}
             >
-              <MaterialCommunityIcons 
-                name={item === "Individual" ? "account" : "account-group"} 
-                size={18} 
-                color={profileType === item ? "#FFF" : "#446451"} 
+              <MaterialCommunityIcons
+                name={item === "Individual" ? "account" : "account-group"}
+                size={18}
+                color={profileType === item ? "#FFF" : "#446451"}
               />
               <Text style={[styles.segmentText, profileType === item && styles.segmentTextActive]}>
                 {tx(item)}

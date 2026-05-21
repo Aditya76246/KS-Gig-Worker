@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
 
   rightSlot: {
-    width: 40,          
+    width: 40,
     alignItems: 'flex-end',
   },
   placeholder: {

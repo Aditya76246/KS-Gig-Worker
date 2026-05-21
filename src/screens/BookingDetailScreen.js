@@ -94,7 +94,7 @@
 //       {/* ── Slim Header Gradient ── */}
 //      <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
 //   <StatusBar barStyle="dark-content" backgroundColor="#F4FAF2" />
-  
+
 //   <TouchableOpacity 
 //     style={styles.backButton} 
 //     onPress={() => navigation.goBack()}
@@ -183,7 +183,7 @@
 //             <TouchableOpacity style={styles.rejectBtn} onPress={handleReject}>
 //               <CustomText style={styles.rejectText}>{status === 'new' ? tx('Reject') : tx('Cancel')}</CustomText>
 //             </TouchableOpacity>
-            
+
 //             <TouchableOpacity style={styles.acceptBtn} onPress={status === 'new' ? handleAccept : () => {}} activeOpacity={0.9}>
 //               <LinearGradient colors={['#16A34A', '#15803D']} style={styles.btnGradient}>
 //                 <Ionicons name={status === 'new' ? "checkmark-circle" : "navigate"} size={18} color="#FFF" />
@@ -553,7 +553,7 @@ export default function BookingDetailScreen({ route, navigation }) {
   const { tx } = useTranslation();
 
   // Lifecycle State based on PRD
-  const [jobStatus, setJobStatus] = useState(booking.status); 
+  const [jobStatus, setJobStatus] = useState(booking.status);
   const isNew = jobStatus === 'new';
   const isAccepted = jobStatus === 'accepted';
   const isOngoing = jobStatus === 'ongoing';
@@ -570,22 +570,22 @@ export default function BookingDetailScreen({ route, navigation }) {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor="#0B3B21" />
 
-      <ScrollView 
-        showsVerticalScrollIndicator={false} 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 140 }}
       >
         {/* ─── Hero Section (Screenshot 1) ─── */}
         <View style={styles.heroSection}>
-          <Image 
-            source={require('../../assets/images/Banner/Slider-2.png')} 
-            style={styles.heroImage} 
+          <Image
+            source={require('../../assets/images/Banner/Slider-2.png')}
+            style={styles.heroImage}
           />
           <LinearGradient
             colors={['rgba(0,0,0,0.5)', 'transparent', 'rgba(0,0,0,0.8)']}
             style={styles.heroOverlay}
           >
-            <TouchableOpacity 
-              style={[styles.backBtn, { top: insets.top + 10 }]} 
+            <TouchableOpacity
+              style={[styles.backBtn, { top: insets.top + 10 }]}
               onPress={() => navigation.goBack()}
             >
               <CustomText style={styles.backBtnText}>Back</CustomText>
@@ -598,7 +598,7 @@ export default function BookingDetailScreen({ route, navigation }) {
           </LinearGradient>
         </View>
         <View style={styles.contentBody}>
-          
+
           {/* ─── Worker Pay Card (Overlapping) ─── */}
           <Animated.View entering={FadeInDown.delay(100)} style={styles.payCard}>
             <View>
@@ -642,7 +642,7 @@ export default function BookingDetailScreen({ route, navigation }) {
               {tx("Upload one farm photo after work completion. This static demo shows the flow only.")}
             </CustomText>
             <TouchableOpacity style={styles.addProofBtn}>
-              <Ionicons name="camera" size={20} color={color.GREEN} style={{marginRight: 8}}/>
+              <Ionicons name="camera" size={20} color={color.GREEN} style={{ marginRight: 8 }} />
               <CustomText style={styles.addProofText}>{tx('Add Proof Photo')}</CustomText>
             </TouchableOpacity>
           </View>
@@ -651,12 +651,12 @@ export default function BookingDetailScreen({ route, navigation }) {
           <View style={styles.card}>
             <CustomText style={styles.cardHeaderTitle}>{tx("Navigation Map")}</CustomText>
             <TouchableOpacity onPress={openMaps} activeOpacity={0.9} style={styles.mapContainer}>
-               <Image source={require('../../assets/images/Banner/Slider-4.png')} style={styles.mapImage} opacity={0.3} />
-               <View style={styles.mapOverlayContent}>
-                  <Ionicons name="navigate-circle" size={44} color={color.GREEN} />
-                  <CustomText style={styles.mapLabel}>{tx("Open Navigation")}</CustomText>
-                  <CustomText style={styles.mapSubText}>{booking.location}</CustomText>
-               </View>
+              <Image source={require('../../assets/images/Banner/Slider-4.png')} style={styles.mapImage} opacity={0.3} />
+              <View style={styles.mapOverlayContent}>
+                <Ionicons name="navigate-circle" size={44} color={color.GREEN} />
+                <CustomText style={styles.mapLabel}>{tx("Open Navigation")}</CustomText>
+                <CustomText style={styles.mapSubText}>{booking.location}</CustomText>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -664,14 +664,14 @@ export default function BookingDetailScreen({ route, navigation }) {
 
       {/* ─── Sticky Footer Actions (Screenshot 2) ─── */}
       <View style={[styles.footer, { paddingBottom: insets.bottom + 10 }]}>
-        <TouchableOpacity 
-          style={[styles.footerBtn, styles.primaryBtn]} 
+        <TouchableOpacity
+          style={[styles.footerBtn, styles.primaryBtn]}
           onPress={() => Alert.alert(tx("Job Accepted"))}
         >
           <CustomText style={styles.primaryBtnText}>{tx("Accept Job")}</CustomText>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={[styles.footerBtn, styles.secondaryBtn]}
           onPress={() => Alert.alert(tx("GPS Punch In"), tx("Location Verified via GPS"))}
         >
@@ -713,7 +713,7 @@ const SettlementRow = ({ label, value, isLast }) => (
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#F4FAF2' },
-  
+
   // Hero Styles
   heroSection: { height: 285, width: '100%', overflow: 'visible' },
   heroImage: { width: '100%', height: '100%' },

@@ -20,9 +20,9 @@ import globalStyles from '../styles/globalStyles';
 
 const { width: W, height: H } = Dimensions.get('window');
 
-const GREEN  = '#2e7d32';
+const GREEN = '#2e7d32';
 const ORANGE = '#e07b00';
-const LIGHT_GREEN  = '#e8f5e9';
+const LIGHT_GREEN = '#e8f5e9';
 const LIGHT_ORANGE = '#fff3e0';
 
 /* ── Dot grid decoration ────────────────────────────────── */
@@ -55,8 +55,8 @@ const Rings = () => (
         style={{ position: 'absolute', top: H * 0.1, left: (W - 300) / 2 }}>
         <Circle cx="150" cy="150" r="145" stroke={GREEN} strokeWidth="1" fill="none" opacity="0.05" />
         <Circle cx="150" cy="150" r="120" stroke={GREEN} strokeWidth="1" fill="none" opacity="0.07" />
-        <Circle cx="150" cy="150" r="95"  stroke={GREEN} strokeWidth="1.5" fill="none" opacity="0.09" />
-        <Circle cx="150" cy="150" r="70"  stroke={ORANGE} strokeWidth="1" fill="none" opacity="0.08" />
+        <Circle cx="150" cy="150" r="95" stroke={GREEN} strokeWidth="1.5" fill="none" opacity="0.09" />
+        <Circle cx="150" cy="150" r="70" stroke={ORANGE} strokeWidth="1" fill="none" opacity="0.08" />
     </Svg>
 );
 
@@ -72,11 +72,11 @@ const Wave = () => (
             </LinearGradient>
         </Defs>
         <Path
-            d={`M0,100 Q${W*0.25},50 ${W*0.5},88 Q${W*0.75},126 ${W},72 L${W},180 L0,180 Z`}
+            d={`M0,100 Q${W * 0.25},50 ${W * 0.5},88 Q${W * 0.75},126 ${W},72 L${W},180 L0,180 Z`}
             fill="url(#wg)"
         />
         <Path
-            d={`M0,120 Q${W*0.3},90 ${W*0.55},115 Q${W*0.78},138 ${W},105 L${W},180 L0,180 Z`}
+            d={`M0,120 Q${W * 0.3},90 ${W * 0.55},115 Q${W * 0.78},138 ${W},105 L${W},180 L0,180 Z`}
             fill={LIGHT_GREEN} opacity="0.45"
         />
     </Svg>
@@ -86,22 +86,22 @@ const Wave = () => (
 export default function SplashScreen({ navigation }) {
     const { t } = useTranslation();
 
-    const fadeIn    = useRef(new Animated.Value(0)).current;
+    const fadeIn = useRef(new Animated.Value(0)).current;
     const logoScale = useRef(new Animated.Value(0.72)).current;
-    const logoY     = useRef(new Animated.Value(28)).current;
-    const chip1X    = useRef(new Animated.Value(-50)).current;
-    const chip2X    = useRef(new Animated.Value(50)).current;
-    const chipOp    = useRef(new Animated.Value(0)).current;
-    const cardY     = useRef(new Animated.Value(70)).current;
-    const cardOp    = useRef(new Animated.Value(0)).current;
-    const floatY    = useRef(new Animated.Value(0)).current;
+    const logoY = useRef(new Animated.Value(28)).current;
+    const chip1X = useRef(new Animated.Value(-50)).current;
+    const chip2X = useRef(new Animated.Value(50)).current;
+    const chipOp = useRef(new Animated.Value(0)).current;
+    const cardY = useRef(new Animated.Value(70)).current;
+    const cardOp = useRef(new Animated.Value(0)).current;
+    const floatY = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         Animated.sequence([
             Animated.parallel([
-                Animated.timing(fadeIn,    { toValue: 1, duration: 650, useNativeDriver: true }),
+                Animated.timing(fadeIn, { toValue: 1, duration: 650, useNativeDriver: true }),
                 Animated.spring(logoScale, { toValue: 1, friction: 6, tension: 50, useNativeDriver: true }),
-                Animated.timing(logoY,     { toValue: 0, duration: 650, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(logoY, { toValue: 0, duration: 650, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
             ]),
             Animated.parallel([
                 Animated.timing(chip1X, { toValue: 0, duration: 480, easing: Easing.out(Easing.back(1.4)), useNativeDriver: true }),
@@ -109,14 +109,14 @@ export default function SplashScreen({ navigation }) {
                 Animated.timing(chipOp, { toValue: 1, duration: 400, useNativeDriver: true }),
             ]),
             Animated.parallel([
-                Animated.timing(cardY,  { toValue: 0, duration: 520, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(cardY, { toValue: 0, duration: 520, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
                 Animated.timing(cardOp, { toValue: 1, duration: 520, useNativeDriver: true }),
             ]),
         ]).start(() => {
             Animated.loop(
                 Animated.sequence([
                     Animated.timing(floatY, { toValue: -9, duration: 2200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-                    Animated.timing(floatY, { toValue: 0,  duration: 2200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+                    Animated.timing(floatY, { toValue: 0, duration: 2200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
                 ])
             ).start();
         });
