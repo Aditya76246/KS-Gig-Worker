@@ -41,7 +41,7 @@ const KycSetupScreen = ({ navigation }) => {
         <View style={styles.headerTopRow}>
           <View style={styles.brandGroup}>
             <Image
-              source={require("../../assets/images/logo/iconpngplain.png")}
+              source={require("../../assets/icons/icon.png")}
               style={styles.logoSmall}
               resizeMode="contain"
             />
@@ -177,8 +177,8 @@ const styles = StyleSheet.create({
   logoSmall: {
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.15)",
+    // borderRadius: 12,
+    // backgroundColor: "rgba(255,255,255,0.15)",
   },
   brandTitle: {
     color: "#FFFFFF",

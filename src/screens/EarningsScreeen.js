@@ -115,7 +115,7 @@ const EarningsScreen = () => {
             </View>
           </View>
 
-          <View style={styles.heroActions}>
+          {/* <View style={styles.heroActions}>
             <TouchableOpacity activeOpacity={0.86} style={styles.primaryButton}>
               <MaterialCommunityIcons name="bank-transfer-out" size={20} color="#0B3B21" />
               <Text style={styles.primaryButtonText}>{tx("Withdraw")}</Text>
@@ -123,7 +123,7 @@ const EarningsScreen = () => {
             <TouchableOpacity activeOpacity={0.86} style={styles.voiceButton}>
               <MaterialCommunityIcons name="microphone" size={19} color="#FFFFFF" />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </LinearGradient>
 
         <View style={styles.summaryGrid}>

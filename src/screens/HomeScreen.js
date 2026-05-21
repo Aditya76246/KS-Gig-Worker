@@ -274,7 +274,7 @@ export default function HomeScreen({ navigation }) {
         >
           <View style={styles.stickyLeft}>
             <Image
-              source={require("../../assets/images/logo/iconpngplain.png")}
+              source={require("../../assets/icons/icon.png")}
               style={styles.stickyLogo}
               resizeMode="contain"
             />
@@ -350,7 +350,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.topBar}>
               <View style={styles.heroIdentity}>
                 <Image
-                  source={require("../../assets/images/logo/iconpngplain.png")}
+                  source={require("../../assets/icons/icon.png")}
                   style={styles.logoIcon}
                   resizeMode="contain"
                 />
@@ -633,8 +633,8 @@ const styles = StyleSheet.create({
   stickyLogo: {
     width: 38,
     height: 38,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.13)",
+    // borderRadius: 14,
+    // backgroundColor: "rgba(255,255,255,0.13)",
   },
   stickyCopy: {
     flex: 1,
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.14)",
+    // backgroundColor: "rgba(255,255,255,0.14)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -759,7 +759,7 @@ const styles = StyleSheet.create({
   },
   switchTrack: {
     width: 46,
-    height: 22,
+    height: 24,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.24)",
     justifyContent: "center",
@@ -795,10 +795,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logoIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    width: 40,
+    height: 40,
+    // borderRadius: 16,
+    // backgroundColor: "rgba(255,255,255,0.12)",
   },
   brandCopy: {
     flex: 1,
@@ -966,7 +966,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   contentLift: {
-    marginTop: -28,
+    marginTop: -30,
   },
   farmScroller: {
     marginTop: 0,
