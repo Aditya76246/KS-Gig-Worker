@@ -7,6 +7,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomText from './CustomText';
 import { useTranslation } from '../localization/i18n';
 import { useNavigation } from '@react-navigation/native';
+import Notifications, {
+  getUnreadNotificationCount,
+  notificationItems,
+} from './Notifications';
 
 /**
  * DUTY SWITCH COMPONENT
@@ -32,9 +36,10 @@ function DutySwitch({ dutyOn, onPress }) {
 // ─── Main Global Header ──────────────────────────────────────────────────────
 export default function CustomHeader({
   location = 'Hyderabad, Telangana',
-  notificationCount = '2',
+  notificationCount = getUnreadNotificationCount(notificationItems),
 }) {
   const [dutyOn, setDutyOn] = useState(true);
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
   const insets = useSafeAreaInsets();
   const { tx } = useTranslation();
   const navigation = useNavigation();
@@ -65,7 +70,12 @@ export default function CustomHeader({
 
           <View style={styles.topActions}>
             {/* Notification Bell */}
-            <Pressable style={styles.bellButton}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={tx('Open notifications')}
+              style={styles.bellButton}
+              onPress={() => setNotificationsVisible(true)}
+            >
               <Ionicons name="notifications" size={20} color="#FFFFFF" />
               <View style={styles.badge}>
                 <CustomText style={styles.badgeText}>{notificationCount}</CustomText>
@@ -86,6 +96,11 @@ export default function CustomHeader({
           <Ionicons name="chevron-down" size={12} color="rgba(255,255,255,0.66)" />
         </Pressable>
       </LinearGradient>
+
+      <Notifications
+        visible={notificationsVisible}
+        onClose={() => setNotificationsVisible(false)}
+      />
     </View>
   );
 }

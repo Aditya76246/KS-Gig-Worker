@@ -17,6 +17,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "../localization/i18n";
+import Notifications, {
+  getUnreadNotificationCount,
+  notificationItems,
+} from "../components/Notifications";
 
 const worker = {
   name: "Aditya Soni",
@@ -147,7 +151,9 @@ export default function HomeScreen({ navigation }) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [showSticky, setShowSticky] = useState(false);
   const [bottomNavHidden, setBottomNavHidden] = useState(false);
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
   const farmCardWidth = width - 40;
+  const unreadNotificationCount = getUnreadNotificationCount(notificationItems);
 
   useEffect(() => () => {
     DeviceEventEmitter.emit("ks:setTabBarHidden", false);
@@ -361,10 +367,15 @@ export default function HomeScreen({ navigation }) {
               </View>
 
               <View style={styles.topActions}>
-                <Pressable style={styles.bellButton}>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={tx("Open notifications")}
+                  style={styles.bellButton}
+                  onPress={() => setNotificationsVisible(true)}
+                >
                   <Ionicons name="notifications" size={20} color="#FFFFFF" />
                   <View style={styles.badge}>
-                    <Text style={styles.badgeText}>2</Text>
+                    <Text style={styles.badgeText}>{unreadNotificationCount}</Text>
                   </View>
                 </Pressable>
                 <DutySwitch dutyOn={dutyOn} onPress={() => setDutyOn((value) => !value)} tx={tx} />
@@ -514,6 +525,11 @@ export default function HomeScreen({ navigation }) {
 
         </View>
       </Animated.ScrollView>
+
+      <Notifications
+        visible={notificationsVisible}
+        onClose={() => setNotificationsVisible(false)}
+      />
     </View>
   );
 }
