@@ -203,6 +203,8 @@ export default function BookingsScreen({ navigation }) {
   const handleViewDetails = (booking) => {
     if (booking.status === 'completed') {
       navigation.navigate('BookingCompleted', { booking });
+    } else if (booking.status === 'ongoing') {
+      navigation.navigate('BookingOngoing', { booking });
     } else {
       navigation.navigate('BookingDetail', { booking });
     }
