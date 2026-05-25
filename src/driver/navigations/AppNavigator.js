@@ -2,9 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AuthNavigator from "./AuthNavigator";
-import MainTabNavigator from "../gigworker/navigations/MainTabNavigator";
-import JobDetailsScreen from "../gigworker/screens/JobDetailsScreen";
-import DriverMainTabNavigator from "../driver/navigations/MainTabNavigator";
+import MainTabNavigator from "./MainTabNavigator";
 
 const Stack = createStackNavigator();
 
@@ -14,9 +12,8 @@ export default function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Auth" component={AuthNavigator} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
-        <Stack.Screen name="DriverMain" component={DriverMainTabNavigator} />
-        <Stack.Screen name="JobDetails" component={JobDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+

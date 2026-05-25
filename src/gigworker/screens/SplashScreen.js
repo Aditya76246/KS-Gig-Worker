@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
-import KSLogo from '../../assets/icons/icon2.png';
+import KSLogo from '../../../assets/icons/icon2.png';
 import CustomText from '../components/CustomText';
-import { color } from '../styles/theme';
-import globalStyles from '../styles/globalStyles';
-import { useTranslation } from '../localization/i18n';
+import { color } from '../../styles/theme';
+import globalStyles from '../../styles/globalStyles';
+import { useTranslation } from '../../localization/i18n';
 
 const { width: W, height: H } = Dimensions.get('window');
 
@@ -534,4 +534,6 @@ const s = StyleSheet.create({
         letterSpacing: 0.35,
     },
 });
+
+
 

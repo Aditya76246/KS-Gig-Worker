@@ -11,7 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTranslation } from "../localization/i18n";
+import { useTranslation } from "../../localization/i18n";
 
 const documents = [
   { id: 1, title: "Aadhaar Card", status: "Verified", detail: "XXXX XXXX 4821", icon: "id-card-outline" },
@@ -42,7 +42,7 @@ const KycSetupScreen = ({ navigation, route }) => {
         <View style={styles.headerTopRow}>
           <View style={styles.brandGroup}>
             <Image
-              source={require("../../assets/icons/icon.png")}
+              source={require("../../../assets/icons/icon.png")}
               style={styles.logoSmall}
               resizeMode="contain"
             />
@@ -397,3 +397,5 @@ const styles = StyleSheet.create({
 });
 
 export default KycSetupScreen;
+
+

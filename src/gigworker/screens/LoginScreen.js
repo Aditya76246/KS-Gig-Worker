@@ -29,11 +29,11 @@ import Animated, {
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path, Circle, Defs, LinearGradient, Stop, Ellipse, G } from 'react-native-svg';
 
-import KSLogo from '../../assets/icons/icon2.png';
-import globalStyles from '../styles/globalStyles';
+import KSLogo from '../../../assets/icons/icon2.png';
+import globalStyles from '../../styles/globalStyles';
 import CustomText from '../components/CustomText';
-import { color } from '../styles/theme';
-import { useTranslation } from '../localization/i18n';
+import { color } from '../../styles/theme';
+import { useTranslation } from '../../localization/i18n';
 
 const { width: W, height: H } = Dimensions.get('window');
 const GREEN = '#2e7d32';
@@ -223,10 +223,10 @@ export default function LoginScreen() {
   };
 
   const handleVerifyOtp = () => {
-    if (otp.length === 4) {
+    if (otp.length === 6) {
       navigation.replace('KycSetup', { role });
     } else {
-      alert(tx('Please enter all 4 digits of OTP'));
+      alert(tx('Please enter all 6 digits of OTP'));
     }
   };
 
@@ -237,7 +237,7 @@ export default function LoginScreen() {
         onPress={() => otpRef.current?.focus()}
         style={styles.otpRow}
       >
-        {[0, 1, 2, 3].map((_, i) => {
+        {[0, 1, 2, 3, 4, 5].map((_, i) => {
           const isActive = i === otp.length;
           const isFilled = i < otp.length;
           return (
@@ -259,7 +259,7 @@ export default function LoginScreen() {
         value={otp}
         onChangeText={setOtp}
         keyboardType="number-pad"
-        maxLength={4}
+        maxLength={6}
         style={styles.hiddenInput}
         pointerEvents="none"
       />
@@ -378,7 +378,7 @@ export default function LoginScreen() {
             {/* ── OTP boxes ── */}
             {showOtp && (
               <Animated.View entering={FadeIn.duration(400)} layout={Layout.springify()}>
-                <Text style={styles.label}>{tx('Enter 4-digit OTP')}</Text>
+                <Text style={styles.label}>{tx('Enter 6-digit OTP')}</Text>
                 {renderOtpBoxes()}
 
                 {/* Resend row */}
@@ -410,7 +410,7 @@ export default function LoginScreen() {
             <TouchableOpacity
               style={[
                 styles.ctaBtn,
-                showOtp && otp.length < 4 && styles.ctaBtnDisabled,
+                showOtp && otp.length < 6 && styles.ctaBtnDisabled,
               ]}
               activeOpacity={0.82}
               onPress={showOtp ? handleVerifyOtp : handleSendOtp}
@@ -812,4 +812,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
   },
 });
+
+
 

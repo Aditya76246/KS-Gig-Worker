@@ -78,7 +78,7 @@
     "Gallery": "Gallery",
     "Gender": "Gender",
     "Gig Worker App": "Gig Worker App",
-    "GPS Punch In": "GPS Punch In",
+    "GPS Punch In": "Reject Job",
     "GPS punch-in": "GPS punch-in",
     "Group Leader": "Group Leader",
     "Help": "Help",
@@ -136,7 +136,7 @@
     "Profile Photo": "Profile Photo",
     "Profile type": "Profile type",
     "Proof and punch-out": "Proof and punch-out",
-    "Punch Out": "Punch Out",
+    "Punch Out": "Job Rejected",
     "Punch-in records saved during weak internet will sync before final payout.": "Punch-in records saved during weak internet will sync before final payout.",
     "Re-enter account number": "Re-enter account number",
     "Reject": "Reject",
@@ -296,7 +296,14 @@
     "Pending farmer confirmation": "Pending farmer confirmation"
   },
   "splash": {
-    "subtitle": "Smart Equipment. Stronger Farms."
+    "subtitle": "Smart Equipment. Stronger Farms.",
+    "title": "Kisan Sahakar",
+    "chooseAccount": "Choose how you want to continue",
+    "gigWorkerLogin": "Login with Gig Worker",
+    "driverLogin": "Login with Driver",
+    "chipWorker": "Farm Gig Worker",
+    "chipQuick": "Quick find work",
+    "footer": "Empowering farmers across India"
   },
   "language": {
     "title": "Choose Language",
