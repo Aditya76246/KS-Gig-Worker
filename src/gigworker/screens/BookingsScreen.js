@@ -201,7 +201,11 @@ export default function BookingsScreen({ navigation }) {
   };
 
   const handleViewDetails = (booking) => {
-    navigation.navigate('BookingDetail', { booking });
+    if (booking.status === 'completed') {
+      navigation.navigate('BookingCompleted', { booking });
+    } else {
+      navigation.navigate('BookingDetail', { booking });
+    }
   };
 
   const filtered = bookings.filter(b => b.status === activeTab);
