@@ -345,7 +345,7 @@ const s = StyleSheet.create({
     /* Chips */
     chipsRow: {
         position: 'absolute',
-        top: H * 0.49,
+        top: H * 0.45,
         left: 0, right: 0,
         flexDirection: 'row',
         justifyContent: 'center',
