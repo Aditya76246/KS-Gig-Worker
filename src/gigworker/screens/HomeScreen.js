@@ -530,6 +530,28 @@ export default function HomeScreen({ navigation }) {
         visible={notificationsVisible}
         onClose={() => setNotificationsVisible(false)}
       />
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={tx("Open crop image analysis")}
+        style={[
+          styles.analysisFab,
+          { bottom: bottomNavHidden ? insets.bottom + 22 : insets.bottom + 100 },
+        ]}
+        onPress={() => navigation.navigate("ImageAnalysis")}
+      >
+        <LinearGradient
+          colors={["#FBBF24", "#15803D"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.analysisFabGradient}
+        >
+          <MaterialCommunityIcons name="image-search" size={28} color="#FFFFFF" />
+        </LinearGradient>
+        <View style={styles.analysisFabBadge}>
+          <Ionicons name="sparkles" size={11} color="#15803D" />
+        </View>
+      </Pressable>
     </View>
   );
 }
@@ -1300,6 +1322,40 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 999,
     backgroundColor: "#F0FDFA", // Slightly different color for "Active"
+  },
+  analysisFab: {
+    position: "absolute",
+    right: 20,
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    zIndex: 30,
+    shadowColor: "#08341E",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.22,
+    shadowRadius: 18,
+    elevation: 14,
+  },
+  analysisFabGradient: {
+    flex: 1,
+    borderRadius: 31,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.78)",
+  },
+  analysisFabBadge: {
+    position: "absolute",
+    top: -2,
+    right: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#DCEBDD",
   },
 });
 

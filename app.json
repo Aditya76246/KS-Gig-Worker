@@ -26,7 +26,15 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Kisan Sahakar uses your gallery photo to analyse crop and harvest quality.",
+          "cameraPermission": "Kisan Sahakar uses your camera to take crop photos for quality analysis.",
+          "microphonePermission": false
+        }
+      ]
     ]
   }
 }
