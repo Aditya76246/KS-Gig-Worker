@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "../../localization/i18n";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-// const GEMINI_API_KEY = "REDACTED";
 const GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
